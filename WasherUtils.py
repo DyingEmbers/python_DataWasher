@@ -1,5 +1,19 @@
 # coding=utf-8
 
+'''
+获取查询结果中的字段描述
+index = cur.description
+
+(name,
+type_code,
+display_size,
+internal_size,
+precision,
+scale,
+null_ok)
+'''
+
+
 import MySQLdb
 
 # 配置库配置

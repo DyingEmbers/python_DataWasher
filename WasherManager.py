@@ -105,6 +105,7 @@ def TaskTick():
     washer_conn = WasherUtils.GetWasherCfgConn()
     cur = washer_conn.cursor()
     cur.execute("select task_id, game, py_name, exec_tm, last_tm from task_list where active = 1")
+
     task_list = cur.fetchall()
     for row in task_list:
         # 检查任务是否需要执行

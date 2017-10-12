@@ -14,7 +14,18 @@ null_ok)
 '''
 
 
-import MySQLdb
+import MySQLdb,time
+
+def CPU_STAT(func, *args, **kwargs):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        ret = func(*args, **kwargs)
+        end = time.time()
+        timestrap = end -start
+        print('function %s running time is %s'%(func.__name__,timestrap))
+        return ret
+    return wrapper
+
 
 # 配置库配置
 __CFG_WAHSER_CFG_IP = "127.0.0.1"
@@ -44,11 +55,11 @@ def GetServerConn(game, server_id):
     result = cur.fetchone()
 
     conn = MySQLdb.connect(
-        host=result[0],
-        port=result[1],
-        user=result[2],
-        passwd=result[3],
-        db=result[4],
+        host=result["ip"],
+        port=result["port"],
+        user=result["user"],
+        passwd=result["password"],
+        db=result["database"],
     )
     cur.close()
     return conn

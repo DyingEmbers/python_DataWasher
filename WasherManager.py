@@ -4,6 +4,7 @@
 import redis, time, datetime, json, WasherUtils
 
 
+
 # 配置
 __CFG_REDIS_IP = "127.0.0.1"
 __CFG_REDIS_PORT = "6379"
@@ -80,6 +81,7 @@ def CheckTask(tm_rule, target_time):
 
 
 # 任务Tick
+@WasherUtils.CPU_STAT
 def TaskTick():
     global __G_REDIS_CONN, __STATIC_TASK_LIST, __G_TASK_PROCESS, __STATIC_TIME_FORMAT
     # 检查当前时间点的有哪些任务

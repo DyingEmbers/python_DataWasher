@@ -17,8 +17,8 @@ def GetTaskConfig(task_id):
     cur = conn.cursor()
     cur.execute("select py_name, save_name, day_one, unique_key from task_list where task_id = '" + str(task_id) + "'")
     task = cur.fetchone()
-    if task == None: return None
-    return {'py_name':task[0], "save_name":task[1], "day_one":task[2], "unique_key":task[3]}
+    if task is None: return None
+    return {'py_name': task[0], "save_name": task[1], "day_one": task[2], "unique_key": task[3]}
 
 def DeleteOldData():
     pass
@@ -52,7 +52,7 @@ def ProcessTask(json_task):
 
     # 读取任务配置
     task_config = GetTaskConfig(task["task_id"])
-    if task_config == None: return True
+    if not task_config: return True
 
     task_obj = __import__(task_config["py_name"])
     if not hasattr(task_obj, "Task"):
@@ -60,20 +60,20 @@ def ProcessTask(json_task):
 
     func = getattr(task_obj, "Task")
 
-    #执行任务
+    # 执行任务
     src_conn = WasherUtils.GetServerConn(task["game"], task["server"])
     data, data_date = func(src_conn,task["time"])
     # 对数据进行加工，填充服务器， 时间， 等信息
     save_data = []
     for line in data:
-        tmp = [None]
-        tmp.extend(line)
+        tmp = [None]            # 自增索引
+        tmp.extend(line)        # 数据
         save_data.append(tmp)
 
     for line in save_data:
-        line.append(task["server"])
-        line.append(data_date)
-        line.append(task["time"])
+        line.append(task["server"])     # 服务器
+        line.append(data_date)          # 数据时间
+        line.append(task["time"])       # 执行时间（TODO 是否需要？）
 
 
     # 写入数据 TODO 目标数据库现在是写死的，以后应该改成task_list的一个参数
@@ -89,7 +89,7 @@ def ProcessTask(json_task):
     try:
         # 拼接sql语句
         InsertWashedData(task_config["save_name"], desc_conn, save_data)
-    except Exception,e:
+    except Exception, e:
         print e
         # TODO 异常处理：表格不存在
 
@@ -102,13 +102,13 @@ def main():
     while True:
         time.sleep(1)
         task = __G_REDIS_CONN.lpop(__STATIC_TASK_LIST)
-        if not task:continue
+        if not task: continue
         try:
             ProcessTask(task)
-        except Exception,e:
-            exstr = traceback.format_exc()
+        except Exception, e:
+            ex_str = traceback.format_exc()
             print e.message
-            print exstr
+            print ex_str
 
 if __name__ == "__main__":
     main()

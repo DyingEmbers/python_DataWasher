@@ -21,8 +21,8 @@ def CPU_STAT(func, *args, **kwargs):
         start = time.time()
         ret = func(*args, **kwargs)
         end = time.time()
-        timestrap = end -start
-        print('function %s running time is %s'%(func.__name__,timestrap))
+        timestrap = end - start
+        print('function %s running time is %s' % (func.__name__, timestrap))
         return ret
     return wrapper
 

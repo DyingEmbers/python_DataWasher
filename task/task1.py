@@ -8,8 +8,6 @@
 @return 返回数据属于哪一天(字符串格式)
 '''
 
-import MySQLdb
-
 def Task(conn, date_time):
     cur = conn.cursor()
     cur.execute("select * from src_1")

@@ -1,5 +1,5 @@
 # coding=utf-8
-import sys, redis, time, json, traceback, WasherUtils
+import sys, redis, time, json, traceback, washer_utils
 sys.path.append("task")
 
 __CFG_REDIS_IP = "127.0.0.1"
@@ -13,7 +13,7 @@ __STATIC_TIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
 def GetTaskConfig(task_id):
-    conn = WasherUtils.GetWasherCfgConn()
+    conn = washer_utils.GetWasherCfgConn()
     cur = conn.cursor()
     cur.execute("select py_name, save_name, day_one, unique_key from task_list where task_id = '" + str(task_id) + "'")
     task = cur.fetchone()
@@ -32,7 +32,6 @@ def DeleteOldData():
 def InsertWashedData(table_name, desc_conn, data):
     if len(data) == 0:return
     desc_cur = desc_conn.cursor()
-    is_first = True
     sql = "INSERT INTO "
     sql += table_name
     sql += " VALUES ("
@@ -48,7 +47,13 @@ def InsertWashedData(table_name, desc_conn, data):
 
     print"insert " + str(len(data)) + " row data to " + table_name
 
-@WasherUtils.CPU_STAT
+# 汇报任务完成情况
+def ReportTaskResult(task, msg):
+
+    pass
+
+
+@washer_utils.CPU_STAT
 def ProcessTask(json_task):
     task = json.loads(json_task)
 
@@ -63,7 +68,7 @@ def ProcessTask(json_task):
     func = getattr(task_obj, "Task")
 
     # 执行任务
-    src_conn = WasherUtils.GetServerConn(task["game"], task["server"])
+    src_conn = washer_utils.GetServerConn(task["game"], task["server"])
     data, data_date = func(src_conn,task["time"])
     # 对数据进行加工，填充服务器， 时间， 等信息
     save_data = []
@@ -77,9 +82,8 @@ def ProcessTask(json_task):
         line.append(data_date)          # 数据时间
         line.append(task["time"])       # 执行时间（TODO 是否需要？）
 
-
     # 写入数据 TODO@apm30 目标数据库现在是写死的，以后应该改成task_list的一个参数
-    desc_conn = WasherUtils.GetServerConn("ana", "ana_db")
+    desc_conn = washer_utils.GetServerConn("ana", "ana_db")
     desc_cur = desc_conn.cursor()
     # 每天的数据唯一， 删除这个服务器今天的其他数据
     if task_config["day_one"] == 1:

@@ -61,5 +61,26 @@ def GetServerConn(game, server_id):
         passwd=result["password"],
         db=result["database"],
     )
-    cur.close()
+
     return conn
+
+# 获取任务列表
+def GetActiveTask():
+    washer_conn = GetWasherCfgConn()
+    cur = washer_conn.cursor()
+    cur.execute("select task_id, game, py_name, exec_tm, last_tm from task_list where active = 1")
+    task_list = cur.fetchall()
+    cur.close()
+    washer_conn.close()
+    return task_list
+
+# 获取任务列表
+def GetServerList(game):
+    washer_conn = GetWasherCfgConn()
+    cur = washer_conn.cursor()
+    cur.execute("select server_id from server_list where game = '" + game + "'")
+    server_list = cur.fetchall()
+    cur.close()
+    washer_conn.close()
+    return server_list
+

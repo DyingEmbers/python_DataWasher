@@ -17,6 +17,8 @@ def GetTaskConfig(task_id):
     cur = conn.cursor()
     cur.execute("select py_name, save_name, day_one, unique_key from task_list where task_id = '" + str(task_id) + "'")
     task = cur.fetchone()
+    cur.close()
+    conn.close()
     if task is None: return None
     return {'py_name': task[0], "save_name": task[1], "day_one": task[2], "unique_key": task[3]}
 
@@ -76,7 +78,7 @@ def ProcessTask(json_task):
         line.append(task["time"])       # 执行时间（TODO 是否需要？）
 
 
-    # 写入数据 TODO 目标数据库现在是写死的，以后应该改成task_list的一个参数
+    # 写入数据 TODO@apm30 目标数据库现在是写死的，以后应该改成task_list的一个参数
     desc_conn = WasherUtils.GetServerConn("ana", "ana_db")
     desc_cur = desc_conn.cursor()
     # 每天的数据唯一， 删除这个服务器今天的其他数据

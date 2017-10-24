@@ -13,7 +13,7 @@ scale,
 null_ok)
 '''
 
-
+import MySQLdb.cursors
 import MySQLdb,time
 
 def CPU_STAT(func, *args, **kwargs):
@@ -42,6 +42,7 @@ def GetWasherCfgConn():
         user=__CFG_WASHER_CFG_USER,
         passwd=__CFG_WASHER_CFG_PWD,
         db=__CFG_WASHER_CFG_DB_NAME,
+        cursorclass=MySQLdb.cursors.DictCursor,
     )
 
     return conn
@@ -50,7 +51,7 @@ def GetWasherCfgConn():
 # 获取数据源连接
 def GetServerConn(game, server_id):
     conn = GetWasherCfgConn()
-    cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    cur = conn.cursor()
     cur.execute("select `ip`, `port`, `user`, `password`, `database` from server_list where game = '" + game + "' and server_id = '" + server_id + "'" )
     result = cur.fetchone()
 
@@ -60,6 +61,7 @@ def GetServerConn(game, server_id):
         user=result["user"],
         passwd=result["password"],
         db=result["database"],
+        cursorclass=MySQLdb.cursors.DictCursor,
     )
 
     return conn

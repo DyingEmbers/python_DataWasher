@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # 模块导入
-import redis, time, datetime, json, washer_utils, signal
+import redis, time, datetime, json, washer_utils, signal, traceback
 
 # 自定义模块
 import constant_var
@@ -109,7 +109,7 @@ def ProcessTask(game, task_id, time_node):
     server_list = washer_utils.GetServerList(game)
     task_idx = 0
     for server in server_list:
-        PushTask(task_list, game, server[0], time_node, task_id, task_idx)
+        PushTask(task_list, game, server["server_id"], time_node, task_id, task_idx)
         task_idx += 1
 
     # 等待任务执行完毕
@@ -148,9 +148,9 @@ def TaskTick():
     task_list = washer_utils.GetActiveTask()
     for row in task_list:
         # 检查任务是否需要执行
-        if not CheckTask(row[3], __G_TASK_PROCESS): continue
+        if not CheckTask(row["exec_tm"], __G_TASK_PROCESS): continue
         
-        ProcessTask(row[1], row[0], __G_TASK_PROCESS)
+        ProcessTask(row["game"], row["task_id"], __G_TASK_PROCESS)
 
     # 更新任务进度
     SetTaskProcessTime(__G_TASK_PROCESS)
@@ -165,7 +165,9 @@ def main():
         try:
             TaskTick()
         except Exception, e:
-            print e
+            ex_str = traceback.format_exc()
+            print e.message
+            print ex_str
         if __G_EXIT_FLAG:
             print "WasherManager Exit!"
             break

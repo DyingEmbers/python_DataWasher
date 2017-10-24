@@ -34,7 +34,9 @@ def GetTaskProcessTime():
     global __G_REDIS_CONN
     task_process = __G_REDIS_CONN.get(constant_var.__STATIC_TASK_PROCESS)
     if task_process is None:
-        task_process = datetime.datetime.now().strftime(constant_var.__STATIC_TIME_FORMAT)
+        task_process = datetime.datetime.now()
+        task_process -= datetime.timedelta(minutes=1)
+        task_process = task_process.strftime(constant_var.__STATIC_TIME_FORMAT)
     return ParseDateTime(task_process, constant_var.__STATIC_TIME_FORMAT)
 
 
@@ -85,15 +87,17 @@ def CheckTaskResult(task_list, task_id, time_node):
     global __G_REDIS_CONN
     while __G_REDIS_CONN.llen(constant_var.__STATIC_DEAL_LIST) != 0:
         task_result = __G_REDIS_CONN.lpop(constant_var.__STATIC_DEAL_LIST)
+        task_result = json.loads(task_result)
+
         # 检查任务是否是当前执行的任务
-        if task_result["task_id"] != task_id or task_result["time_node"] != time_node:
+        if task_result["task_id"] != task_id or ParseDateTime(task_result["time"],"%Y-%m-%d %H:%M:%S") != time_node:
             # TODO@apm30 超时任务需要做好异常处理
             print "ERRO: receive time out task[%d] at time_node[%s]" % (task_result["task_id"], str(time_node))
             continue
 
         # 任务执行成功，删除task_list中对应的任务
-        task_list.remove(task_result["idx"])
-
+        task_list.pop(task_result["task_idx"])
+        
         # 检查任务完成情况
         if task_result["result"] != 0:
             # TODO@apm30 失败任务的处理

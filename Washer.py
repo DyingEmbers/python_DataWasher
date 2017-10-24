@@ -22,8 +22,7 @@ def GetTaskConfig(task_id):
     task = cur.fetchone()
     cur.close()
     conn.close()
-    if task is None: return None
-    return {'py_name': task[0], "save_name": task[1], "day_one": task[2], "unique_key": task[3]}
+    return task
 
 # 将清洗过后的数据插入数据
 # param table_name 表格名称
@@ -31,21 +30,26 @@ def GetTaskConfig(task_id):
 # param data 需要插入的数据
 def InsertWashedData(table_name, desc_conn, data):
     if len(data) == 0: return
-    # 获取需要储存数据的key
-
-    # 存储数据
-
     desc_cur = desc_conn.cursor()
     sql = "INSERT INTO "
     sql += table_name
-    sql += " VALUES ("
-    line = data[0]
+
+    data_key = "("
+    data_val = "("
+
     is_first = True
+    line = data[0]
     for key in line:
-        if not is_first: sql += ", "
-        sql += "%(" + key + ")s"
+        if not is_first:
+            data_key += ", "
+            data_val += ", "
+        data_key += "`" + key + "`"
+        data_val += "%(" + key + ")s"
         is_first = False
-    sql += ")"
+    data_key += ")"
+    data_val += ")"
+    sql += data_key + " VALUES" + data_val
+    print sql
     desc_cur.executemany(sql, data)
     desc_conn.commit()
 
@@ -56,7 +60,7 @@ def ReportTaskResult(task, msg):
     global __G_REDIS_CONN
 
     # 插入任务
-    result = {"time": task["time_node"], "task_id": task["task_id"], "task_idx": task["task_idx"], "result":msg}
+    result = {"time": task["time"], "task_id": task["task_id"], "task_idx": task["task_idx"], "result": msg}
     __G_REDIS_CONN.rpush(constant_var.__STATIC_DEAL_LIST, json.dumps(result))
 
 
@@ -93,7 +97,7 @@ def ProcessTask(json_task):
     src_conn.close()
     # 对数据进行加工，填充服务器， 时间， 等信息
     for line in data:
-        line["__t_id"] = None
+        line["server"] = task["server"]
         line["wash_date"] = data_date
         line["wash_time"] = task["time"]
 
@@ -103,7 +107,7 @@ def ProcessTask(json_task):
         ReportTaskResult(task, "DescConnErr")
         return
 
-    desc_cur = desc_conn.cursor()
+    #desc_cur = desc_conn.cursor()
     # 每天的数据唯一， 删除这个服务器今天的其他数据
     # if task_config["day_one"] == 1:
     #     row_num = desc_cur.execute("delete from " + task_config["save_name"] + " where `wash_date` = '" + data_date + "' and `server` = '" + task["server"] + "'")
@@ -120,7 +124,9 @@ def ProcessTask(json_task):
 
         # TODO 异常处理：字段不匹配
 
+    # 发送成功消息，清理环境
     ReportTaskResult(task, "Finish")
+    desc_conn.close()
 
 def main():
     global __G_REDIS_CONN, __STATIC_TASK_LIST

@@ -203,22 +203,21 @@ def ProcessExecTask(task_id, begin_time, end_time):
 # 额外任务Tick
 def ExecTick():
     # 检查是否有额外任务
-    data_conn = washer_utils.GetServerConn("wash_data")
+    conn = washer_utils.GetServerConn("wash_data")
     sql = "SELECT * from tt_exec"
-    data_cursor = data_conn.cursor()
-    data_cursor.execute(sql)
-    exec_task = data_cursor.fetchall()
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    exec_task = cursor.fetchall()
 
     if len(exec_task) == 0: return
-
     # 执行额外任务
     for line in exec_task:
         ProcessExecTask(line["task_id"], line["begin_time"], line["end_time"])
         # 清理现场
+        cursor.execute("delete from tt_exec where _id = " + str(line["_id"]))
 
-
-    data_cursor.close()
-    data_conn.close()
+    cursor.close()
+    conn.close()
 
 def main():
     global __G_EXIT_FLAG

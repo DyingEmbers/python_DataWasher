@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/washer.py" description="启动清洗脚本" line="216" />
+    <bookmark url="file://$PROJECT_DIR$/washer_manager.py" description="启动管理器" line="240" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="1f6cd6a0-3c66-44db-9f05-bbc06d4ddddc" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/task/TaskUtils.py" afterPath="$PROJECT_DIR$/task/task_utils.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Washer.py" afterPath="$PROJECT_DIR$/Washer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/task/task1.py" afterPath="$PROJECT_DIR$/task/task1.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/washer_manager.py" afterPath="$PROJECT_DIR$/washer_manager.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/washer_utils.py" afterPath="$PROJECT_DIR$/washer_utils.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -11,23 +19,26 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="python_DataWasher" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="task1.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/task/task1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state relative-caret-position="295">
+              <caret line="37" column="0" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="task_utils.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="task_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/task/task_utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="114">
-              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -36,9 +47,11 @@
       <file leaf-file-name="washer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/washer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="169">
+              <caret line="176" column="137" lean-forward="false" selection-start-line="176" selection-start-column="137" selection-end-line="176" selection-end-column="137" />
+              <folding>
+                <element signature="e#16#89#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -46,20 +59,20 @@
       <file leaf-file-name="constant_var.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/constant_var.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+            <state relative-caret-position="171">
+              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="washer_manager.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="washer_manager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/washer_manager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="114" column="14" lean-forward="true" selection-start-line="114" selection-start-column="14" selection-end-line="114" selection-end-column="14" />
+            <state relative-caret-position="167">
+              <caret line="207" column="9" lean-forward="false" selection-start-line="207" selection-start-column="9" selection-end-line="207" selection-end-column="9" />
               <folding>
-                <element signature="e#23#79#0" expanded="true" />
+                <element signature="e#23#90#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -68,9 +81,11 @@
       <file leaf-file-name="washer_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/washer_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="263">
+              <caret line="57" column="24" lean-forward="false" selection-start-line="57" selection-start-column="24" selection-end-line="57" selection-end-column="24" />
+              <folding>
+                <element signature="e#137#159#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -86,21 +101,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>strptime</find>
-      <find>strftime</find>
-      <find>GetServerConn</find>
-      <find>GetWasherCfgConn</find>
-      <find>description</find>
-      <find>save</find>
-      <find>cursor</find>
-      <find>cst</find>
-      <find>None</find>
       <find>wait_second</find>
       <find>conn</find>
       <find>PushTask</find>
       <find>init</find>
       <find>constant_var.</find>
       <find>__STATIC_SERVER_LIST</find>
+      <find>src_conn</find>
+      <find>return</find>
+      <find>GetActiveTask</find>
+      <find>row</find>
+      <find>server</find>
+      <find>InsertWashedData</find>
+      <find>desc_conn</find>
+      <find>loads</find>
+      <find>GetWasherCfgConn</find>
+      <find>py_name</find>
+      <find>py_nam</find>
+      <find>ProcessTask</find>
+      <find>timedelta</find>
+      <find>__G_TASK_PROCESS</find>
+      <find>GetTaskConfig</find>
+      <find>GetServerConn</find>
+      <find>game</find>
+      <find>args</find>
+      <find>create</find>
+      <find>comm</find>
+      <find>CreateTableByData</find>
+      <find>AddTableIndex</find>
+      <find>`</find>
+      <find>exec</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -109,17 +139,20 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/washer_utils.py" />
         <option value="$PROJECT_DIR$/task/TaskUtils.py" />
         <option value="$PROJECT_DIR$/WasherUtils.py" />
-        <option value="$PROJECT_DIR$/task/task1.py" />
         <option value="$PROJECT_DIR$/Washer.py" />
         <option value="$PROJECT_DIR$/api_common.py" />
         <option value="$PROJECT_DIR$/WasherManager.py" />
+        <option value="$PROJECT_DIR$/constant_var.py" />
+        <option value="$PROJECT_DIR$/task/task1.py" />
+        <option value="$PROJECT_DIR$/washer_utils.py" />
+        <option value="$PROJECT_DIR$/washer.py" />
+        <option value="$PROJECT_DIR$/washer_manager.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="210" />
     <option name="width" value="1400" />
     <option name="height" value="820" />
@@ -159,7 +192,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -176,11 +208,13 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="SearchEverywhereHistoryKey" value="processtas&#9;null&#9;null" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -194,7 +228,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Washer">
+  <component name="RunManager" selected="Python.washer">
     <configuration name="Washer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -229,14 +263,52 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <list size="2">
+    <configuration name="washer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="python_DataWasher" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/washer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="washer_manager" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="python_DataWasher" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/washer_manager.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.Washer" />
       <item index="1" class="java.lang.String" itemvalue="Python.WasherManager" />
+      <item index="2" class="java.lang.String" itemvalue="Python.washer_manager" />
+      <item index="3" class="java.lang.String" itemvalue="Python.washer" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Python.Washer" />
-        <item index="1" class="java.lang.String" itemvalue="Python.WasherManager" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Python.washer" />
+        <item index="1" class="java.lang.String" itemvalue="Python.washer_manager" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Washer" />
+        <item index="3" class="java.lang.String" itemvalue="Python.WasherManager" />
       </list>
     </recent_temporary>
   </component>
@@ -262,26 +334,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.087403595" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14395887" sideWeight="0.6046065" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960895" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960895" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282123" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3282123" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21549894" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27234638" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.4944134" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3980447" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26955307" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14395887" sideWeight="0.39539346" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3058659" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32969153" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -347,57 +419,38 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/washer_manager.py</url>
-          <line>129</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/washer_manager.py</url>
-          <line>173</line>
-          <option name="timeStamp" value="46" />
+          <url>file://C:/Python27/Lib/site-packages/MySQLdb/cursors.py</url>
+          <line>183</line>
+          <option name="timeStamp" value="67" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/washer.py</url>
-          <line>57</line>
-          <option name="timeStamp" value="47" />
+          <line>51</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/washer.py</url>
+          <line>105</line>
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/washer.py</url>
+          <line>58</line>
+          <option name="timeStamp" value="78" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="48" />
+      <option name="time" value="79" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/washer_manager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1634">
-          <caret line="86" column="0" lean-forward="true" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
-          <folding>
-            <element signature="e#23#79#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/task/task1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/task/task_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/washer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="589">
           <caret line="31" column="33" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -406,7 +459,7 @@
         <state relative-caret-position="836">
           <caret line="44" column="45" lean-forward="false" selection-start-line="44" selection-start-column="45" selection-end-line="44" selection-end-column="45" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -415,7 +468,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
           <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#137#159#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -440,7 +495,7 @@
         <state relative-caret-position="817">
           <caret line="43" column="45" lean-forward="false" selection-start-line="43" selection-start-column="45" selection-end-line="43" selection-end-column="45" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -449,7 +504,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="9" column="14" lean-forward="true" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
-          <folding />
+          <folding>
+            <element signature="e#137#159#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -459,7 +516,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1539">
           <caret line="81" column="0" lean-forward="true" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -483,7 +542,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1102">
           <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -492,7 +553,7 @@
         <state relative-caret-position="2014">
           <caret line="106" column="98" lean-forward="false" selection-start-line="106" selection-start-column="98" selection-end-line="106" selection-end-column="98" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -502,7 +563,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
           <caret line="19" column="33" lean-forward="true" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#137#159#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -526,7 +589,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1102">
           <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -535,7 +600,7 @@
         <state relative-caret-position="1976">
           <caret line="104" column="39" lean-forward="true" selection-start-line="104" selection-start-column="39" selection-end-line="104" selection-end-column="39" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -545,7 +610,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#137#159#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -561,7 +628,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="25" column="24" lean-forward="true" selection-start-line="25" selection-start-column="24" selection-end-line="25" selection-end-column="24" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -570,7 +639,7 @@
         <state relative-caret-position="1634">
           <caret line="86" column="9" lean-forward="true" selection-start-line="86" selection-start-column="9" selection-end-line="86" selection-end-column="9" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -587,7 +656,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="779">
           <caret line="41" column="27" lean-forward="true" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -596,7 +667,7 @@
         <state relative-caret-position="627">
           <caret line="33" column="0" lean-forward="true" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -614,7 +685,7 @@
         <state relative-caret-position="304">
           <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#23#90#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -623,7 +694,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="9" column="21" lean-forward="true" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-          <folding />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -657,7 +730,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/MySQLdb/cursors.py" />
     <entry file="file://C:/Python27/Lib/site-packages/MySQLdb/constants/FIELD_TYPE.py" />
     <entry file="file://C:/Python27/Lib/distutils/ccompiler.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -670,56 +742,47 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="347">
           <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/MySQLdb/cursors.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="293" column="11" lean-forward="true" selection-start-line="293" selection-start-column="11" selection-end-line="293" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/site-packages/MySQLdb/__init__.py">
+    <entry file="file://C:/Python27/Lib/site-packages/MySQLdb/connections.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state relative-caret-position="-323">
+          <caret line="39" column="20" lean-forward="true" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/task/task1.py">
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/python-skeletons/datetime.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        <state relative-caret-position="151">
+          <caret line="288" column="13" lean-forward="false" selection-start-line="288" selection-start-column="13" selection-end-line="288" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/washer_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/washer_manager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="114" column="14" lean-forward="true" selection-start-line="114" selection-start-column="14" selection-end-line="114" selection-end-column="14" />
+        <state relative-caret-position="263">
+          <caret line="57" column="24" lean-forward="false" selection-start-line="57" selection-start-column="24" selection-end-line="57" selection-end-column="24" />
           <folding>
-            <element signature="e#23#79#0" expanded="true" />
+            <element signature="e#137#159#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/constant_var.py">
+    <entry file="file://$PROJECT_DIR$/task/task1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/washer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        <state relative-caret-position="295">
+          <caret line="37" column="0" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -727,8 +790,115 @@
     <entry file="file://$PROJECT_DIR$/task/task_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="114">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/constant_var.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2017.2/system/python_stubs/-762174762/__builtin__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="315" column="41" lean-forward="false" selection-start-line="315" selection-start-column="41" selection-end-line="315" selection-end-column="41" />
+          <folding>
+            <element signature="e#1297#1399#0" expanded="false" />
+            <element signature="e#1472#1643#0" expanded="false" />
+            <element signature="e#1716#1881#0" expanded="false" />
+            <element signature="e#1980#2393#0" expanded="false" />
+            <element signature="e#2464#2588#0" expanded="false" />
+            <element signature="e#2666#2880#0" expanded="false" />
+            <element signature="e#2946#3067#0" expanded="false" />
+            <element signature="e#3136#3249#0" expanded="false" />
+            <element signature="e#3321#3571#0" expanded="false" />
+            <element signature="e#3693#4538#0" expanded="false" />
+            <element signature="e#4601#4740#0" expanded="false" />
+            <element signature="e#4801#4940#0" expanded="false" />
+            <element signature="e#5023#5167#0" expanded="false" />
+            <element signature="e#5245#5942#0" expanded="false" />
+            <element signature="e#6001#6141#0" expanded="false" />
+            <element signature="e#6240#6656#0" expanded="false" />
+            <element signature="e#6761#7025#0" expanded="false" />
+            <element signature="e#7164#7462#0" expanded="false" />
+            <element signature="e#7553#7699#0" expanded="false" />
+            <element signature="e#7778#8069#0" expanded="false" />
+            <element signature="e#8138#8271#0" expanded="false" />
+            <element signature="e#8354#8566#0" expanded="false" />
+            <element signature="e#8640#8850#0" expanded="false" />
+            <element signature="e#8928#9039#0" expanded="false" />
+            <element signature="e#9110#9239#0" expanded="false" />
+            <element signature="e#9311#9523#0" expanded="false" />
+            <element signature="e#9601#9698#0" expanded="false" />
+            <element signature="e#9772#10078#0" expanded="false" />
+            <element signature="e#10635#10922#0" expanded="false" />
+            <element signature="e#10990#11288#0" expanded="false" />
+            <element signature="e#11361#11477#0" expanded="false" />
+            <element signature="e#11538#11677#0" expanded="false" />
+            <element signature="e#11745#11885#0" expanded="false" />
+            <element signature="e#11981#12521#0" expanded="false" />
+            <element signature="e#12581#12811#0" expanded="false" />
+            <element signature="e#12871#13103#0" expanded="false" />
+            <element signature="e#13191#13394#0" expanded="false" />
+            <element signature="e#13465#13588#0" expanded="false" />
+            <element signature="e#13685#13933#0" expanded="false" />
+            <element signature="e#13999#14108#0" expanded="false" />
+            <element signature="e#14185#14384#0" expanded="false" />
+            <element signature="e#14448#14828#0" expanded="false" />
+            <element signature="e#14886#14890#0" expanded="false" />
+            <element signature="e#14971#15433#0" expanded="false" />
+            <element signature="e#15515#15866#0" expanded="false" />
+            <element signature="e#114513#120470#0" expanded="false" />
+            <element signature="e#120497#128836#0" expanded="false" />
+            <element signature="e#120497#121123#1" expanded="false" />
+            <element signature="e#121206#121431#0" expanded="false" />
+            <element signature="e#128870#131705#0" expanded="false" />
+            <element signature="e#131737#135255#0" expanded="false" />
+            <element signature="e#135287#136298#0" expanded="false" />
+            <element signature="e#136324#143483#0" expanded="false" />
+            <element signature="e#143511#145237#0" expanded="false" />
+            <element signature="e#145273#146593#0" expanded="false" />
+            <element signature="e#146622#148513#0" expanded="false" />
+            <element signature="e#148542#152098#0" expanded="false" />
+            <element signature="e#152125#155492#0" expanded="false" />
+            <element signature="e#155526#174113#0" expanded="false" />
+            <element signature="e#174142#175632#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python27/Lib/site-packages/MySQLdb/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="88" column="36" lean-forward="false" selection-start-line="88" selection-start-column="36" selection-end-line="88" selection-end-column="36" />
+          <folding>
+            <element signature="e#398#463#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/washer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="176" column="137" lean-forward="false" selection-start-line="176" selection-start-column="137" selection-end-line="176" selection-end-column="137" />
+          <folding>
+            <element signature="e#16#89#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/washer_manager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="207" column="9" lean-forward="false" selection-start-line="207" selection-start-column="9" selection-end-line="207" selection-end-column="9" />
+          <folding>
+            <element signature="e#23#90#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

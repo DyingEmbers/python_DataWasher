@@ -57,7 +57,7 @@ def PushTask(task_list, game, server, time_node, task_id, task_idx):
     global __G_REDIS_CONN
 
     # 插入任务
-    task = {"game": game,"server": server, "time": str(time_node), "task_id": task_id, "task_idx": task_idx}
+    task = {"game": game, "server": server, "time": str(time_node), "task_id": task_id, "task_idx": task_idx}
     __G_REDIS_CONN.rpush(constant_var.__STATIC_TASK_LIST, json.dumps(task))
     task_list.append(task)
     return task
@@ -82,32 +82,55 @@ def CheckTask(tm_rule, target_time):
 
     return True
 
+# 记录执行错误的任务
+def SaveFailedTask(task_id, server, wash_time, err_msg):
+    data_conn = washer_utils.GetServerConn("washer", "wash_data")
+    sql = "INSERT INTO err_task(task_id, server, wash_time, err_msg)VALUE(%s,%s,%s,%s)"
+    data_cursor = data_conn.cursor()
+    data_cursor.execute(sql, [task_id, server, str(wash_time), err_msg])
+    data_conn.commit()
+    data_cursor.close()
+    data_conn.close()
+
 # 接收清洗脚本的执行结果
 def CheckTaskResult(task_list, task_id, time_node):
     global __G_REDIS_CONN
     while __G_REDIS_CONN.llen(constant_var.__STATIC_DEAL_LIST) != 0:
-        task_result = __G_REDIS_CONN.lpop(constant_var.__STATIC_DEAL_LIST)
-        task_result = json.loads(task_result)
+        result_json = __G_REDIS_CONN.lpop(constant_var.__STATIC_DEAL_LIST)
+        task_result = json.loads(result_json)
 
         # 检查任务是否是当前执行的任务
         if task_result["task_id"] != task_id or ParseDateTime(task_result["time"],"%Y-%m-%d %H:%M:%S") != time_node:
             # TODO@apm30 超时任务需要做好异常处理
             print "ERRO: receive time out task[%d] at time_node[%s]" % (task_result["task_id"], str(time_node))
+            SaveFailedTask(task_id, task_result["server"], time_node, "TimeOut")
             continue
 
-        # 任务执行成功，删除task_list中对应的任务
-        task_list.pop(task_result["task_idx"])
-        
+        # 收到任务执行结果，删除task_list中对应的任务
+        found = False
+        for item in task_list:
+            if item["task_idx"] != task_result["task_idx"]: continue
+            task_list.remove(item)
+            found = True
+            break
+
+        if not found:
+            # TODO@apm30 收到任务执行结果，但内存中没有对应任务， 可能任务重复执行
+            print "ERRO: process task[%d] at time_node[%s] task json[%s]" % (task_result["task_id"], str(time_node), result_json)
+            SaveFailedTask(task_id, task_result["server"], time_node, "DuplicateTask")
+
         # 检查任务完成情况
-        if task_result["result"] != 0:
-            # TODO@apm30 失败任务的处理
-            print "ERRO: process task[%d] at time_node[%s] get err[%d] from result" % (task_result["task_id"], str(time_node), task_result["result"])
-            continue
+        if task_result["result"] != "Finish":
+            print "ERRO: process task[%d] at time_node[%s] get err[%s] from result" % (task_result["task_id"], str(time_node), task_result["result"])
+            # 记录执行失败的问题
+            SaveFailedTask(task_id, task_result["server"], time_node, task_result["result"])
 
 
 # 处理任务
-def ProcessTask(game, task_id, time_node):
-    global __CFG_TASK_TIME_OUT # 配置
+def ProcessTask(task_id, time_node):
+    global __CFG_TASK_TIME_OUT  # 配置
+    task_cfg = washer_utils.GetTaskConfig(task_id)
+    game = task_cfg["game"]
     task_list = []
     # 向redis写任务
     server_list = washer_utils.GetServerList(game)
@@ -117,14 +140,16 @@ def ProcessTask(game, task_id, time_node):
         task_idx += 1
 
     # 等待任务执行完毕
-    wait_second = 0
+    task_begin = datetime.datetime.now()
     while len(task_list) != 0:
-        time.sleep(1)
-        wait_second += 1
-        CheckTaskResult(task_list, task_id, time_node)
-
+        time.sleep(0.1)
+        try:
+            CheckTaskResult(task_list, task_id, time_node)
+        except Exception,e:
+            ex_str = traceback.format_exc()
+            print "Check task result err \n err stack is :\n" + ex_str
         # 超时
-        if wait_second > __CFG_TASK_TIME_OUT: break
+        if task_begin + datetime.timedelta(seconds=__CFG_TASK_TIME_OUT) <= datetime.datetime.now(): break
 
 # 任务Tick
 @washer_utils.CPU_STAT
@@ -154,10 +179,46 @@ def TaskTick():
         # 检查任务是否需要执行
         if not CheckTask(row["exec_tm"], __G_TASK_PROCESS): continue
         
-        ProcessTask(row["game"], row["task_id"], __G_TASK_PROCESS)
+        ProcessTask(row["task_id"], __G_TASK_PROCESS)
 
     # 更新任务进度
     SetTaskProcessTime(__G_TASK_PROCESS)
+
+# 执行额外任务
+def ProcessExecTask(task_id, begin_time, end_time):
+    task_cfg = washer_utils.GetTaskConfig(task_id)
+    if not task_cfg:
+        print "can not found task[%d]" % task_id
+        return
+
+    # 去除秒数
+    process_time = begin_time - datetime.timedelta(seconds=begin_time.second)
+    while process_time <= end_time:
+        # 检查当前时间点是否需要执行
+        if not CheckTask(task_cfg["exec_tm"], process_time): continue
+        ProcessTask(task_id, process_time)
+        print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
+        process_time += datetime.timedelta(minutes=1)
+
+# 额外任务Tick
+def ExecTick():
+    # 检查是否有额外任务
+    data_conn = washer_utils.GetServerConn("wash_data")
+    sql = "SELECT * from tt_exec"
+    data_cursor = data_conn.cursor()
+    data_cursor.execute(sql)
+    exec_task = data_cursor.fetchall()
+
+    if len(exec_task) == 0: return
+
+    # 执行额外任务
+    for line in exec_task:
+        ProcessExecTask(line["task_id"], line["begin_time"], line["end_time"])
+        # 清理现场
+
+
+    data_cursor.close()
+    data_conn.close()
 
 def main():
     global __G_EXIT_FLAG
@@ -167,7 +228,8 @@ def main():
     # 主循环
     while True:
         try:
-            TaskTick()
+            # TaskTick()
+            ExecTick()
         except Exception, e:
             ex_str = traceback.format_exc()
             print e.message

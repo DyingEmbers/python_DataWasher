@@ -49,10 +49,10 @@ def GetWasherCfgConn():
 
 
 # 获取数据源连接
-def GetServerConn(game, server_id):
+def GetServerConn(server_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select `ip`, `port`, `user`, `password`, `database` from server_list where game = '" + game + "' and server_id = '" + server_id + "'" )
+    cur.execute("select `ip`, `port`, `user`, `password`, `database` from server_list where server_id = '" + server_id + "'" )
     result = cur.fetchone()
 
     conn = MySQLdb.connect(
@@ -63,6 +63,8 @@ def GetServerConn(game, server_id):
         db=result["database"],
         cursorclass=MySQLdb.cursors.DictCursor,
     )
+    if not conn:
+        print "taget db[%s] not found " % server_id
 
     return conn
 
@@ -86,3 +88,11 @@ def GetServerList(game):
     washer_conn.close()
     return server_list
 
+def GetTaskConfig(task_id):
+    conn = GetWasherCfgConn()
+    cur = conn.cursor()
+    cur.execute("select game, py_name, save_name, day_one, unique_key, exec_tm from task_list where task_id = '" + str(task_id) + "'")
+    task = cur.fetchone()
+    cur.close()
+    conn.close()
+    return task

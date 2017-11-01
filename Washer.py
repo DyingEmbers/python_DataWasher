@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import sys, redis, time, json, traceback, washer_utils, MySQLdb, datetime
+import sys, redis, time, json, traceback, washer_utils, MySQLdb, datetime, socket
 
 import constant_var
 sys.path.append("task")
@@ -9,6 +9,7 @@ __CFG_REDIS_IP = "127.0.0.1"
 __CFG_REDIS_PORT = "6379"
 
 __G_REDIS_CONN = None
+__G_WASHER_ZONE = None   # 清洗脚本所属区域
 
 # 静态变量
 __STATIC_TASK_LIST = "task_list"
@@ -199,13 +200,24 @@ def ProcessTask(json_task):
     ReportTaskResult(task, "Finish")
     desc_conn.close()
 
+# 获取清洗中心所属的区域
+def GetWasherZone():
+    ip_address = socket.gethostbyname(socket.gethostname())
+    return washer_utils.GetZoneByIP(ip_address)
+
 def main():
-    global __G_REDIS_CONN, __STATIC_TASK_LIST
+    global __G_REDIS_CONN, __STATIC_TASK_LIST, __G_WASHER_ZONE
     __G_REDIS_CONN = redis.Redis(host=__CFG_REDIS_IP, port=__CFG_REDIS_PORT)
+    __G_WASHER_ZONE = GetWasherZone()
+    if not __G_WASHER_ZONE:
+        return
+    print "washer init finish @ zone[%s]" % __G_WASHER_ZONE
+
+    listen_task = __G_WASHER_ZONE + "_" + __STATIC_TASK_LIST
 
     while True:
         time.sleep(0.1)
-        task = __G_REDIS_CONN.lpop(__STATIC_TASK_LIST)
+        task = __G_REDIS_CONN.lpop(listen_task)
         if not task: continue
         try:
             ProcessTask(task)

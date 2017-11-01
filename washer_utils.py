@@ -96,3 +96,27 @@ def GetTaskConfig(task_id):
     cur.close()
     conn.close()
     return task
+
+def GetZoneByIP(ip):
+    conn = GetWasherCfgConn()
+    cur = conn.cursor()
+    cur.execute("select zone from zone_cfg where ip = '" + str(ip) + "'")
+    zone = cur.fetchone()
+    cur.close()
+    conn.close()
+    if not zone:
+        print "can not get washer zone by ip " + ip
+        return None
+    return zone["zone"]
+
+def GetZoneByServerID(ip):
+    conn = GetWasherCfgConn()
+    cur = conn.cursor()
+    cur.execute("select zone from zone_cfg where ip = '" + str(ip) + "'")
+    zone = cur.fetchone()
+    cur.close()
+    conn.close()
+    if not zone:
+        print "can not get washer zone by ip " + ip
+        return None
+    return zone["zone"]

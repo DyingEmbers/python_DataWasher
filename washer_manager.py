@@ -58,9 +58,10 @@ def PushTask(task_list, game, server, time_node, task_id, task_idx):
 
     # 插入任务
     task = {"game": game, "server": server, "time": str(time_node), "task_id": task_id, "task_idx": task_idx}
-    __G_REDIS_CONN.rpush(constant_var.__STATIC_TASK_LIST, json.dumps(task))
+    zone = washer_utils.GetZoneByServerID(server)
+    if not zone: return
+    __G_REDIS_CONN.rpush(zone + "_" + constant_var.__STATIC_TASK_LIST, json.dumps(task))
     task_list.append(task)
-    return task
 
 def _CheckTimeNode(time_node, target_time):
     if time_node == "*":
@@ -227,7 +228,7 @@ def main():
     # 主循环
     while True:
         try:
-            # TaskTick()
+            TaskTick()
             ExecTick()
         except Exception, e:
             ex_str = traceback.format_exc()

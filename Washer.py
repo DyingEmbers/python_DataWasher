@@ -11,10 +11,6 @@ __CFG_REDIS_PORT = "6379"
 __G_REDIS_CONN = None
 __G_WASHER_ZONE = None   # 清洗脚本所属区域
 
-# 静态变量
-__STATIC_TASK_LIST = "task_list"
-__STATIC_TIME_FORMAT = "%Y-%m-%d %H:%M"
-
 # 根据传入参数的类型返回类型字符串
 def GetDataType(data):
     if isinstance(data, int):
@@ -40,10 +36,10 @@ def CreateTableByData(db_id, table_name, data):
     if not conn: return
 
     # 构造sql语句
-    sql = "CREATE TABLE IF NOT EXISTS " + repr(table_name) + "(`__t_id` INT UNSIGNED AUTO_INCREMENT,"
+    sql = "CREATE TABLE IF NOT EXISTS `" + (table_name) + "`(`__t_id` INT UNSIGNED AUTO_INCREMENT,"
     line = data[0]
     for key in line:
-        sql += repr(key)
+        sql += "`" + key + "`"
         # 解析类型
         sql += GetDataType(line[key]) + ", "
 
@@ -62,7 +58,7 @@ def AddTableIndex(db_id, table_name, key, val):
 
     # 构造sql语句
     # ALTER TABLE table_name ADD field_name field_type;
-    sql = "ALTER TABLE " + repr(table_name) + " ADD " + repr(key)
+    sql = "ALTER TABLE `" + table_name + "` ADD `" + key + "`"
     sql += " " + GetDataType(val)
 
     # 创建表格
@@ -90,7 +86,7 @@ def InsertWashedData(table_name, desc_conn, data):
         if not is_first:
             data_key += ", "
             data_val += ", "
-        data_key += repr(key)
+        data_key += "`" + key + "`"
         data_val += "%(" + key + ")s"
         is_first = False
     data_key += ")"
@@ -175,7 +171,8 @@ def ProcessTask(json_task):
     # 每次执行的数据唯一， 删除这个服务器该时间点的其他数据
     if task_config["day_one"] == 1:
         try:
-            row_num = desc_cur.execute("delete from " + task_config["save_name"] + " where `wash_time` = " + repr(task["time"]) + " and `server` = " + repr(task["server"]))
+            tmp_sql = "delete from " + task_config["save_name"] + " where `wash_time` = '" + task["time"] + "' and `server` = '" + task["server"] + "'"
+            row_num = desc_cur.execute(tmp_sql)
             desc_conn.commit()
             print "delete " + str(row_num) + " row data from table " + task_config["save_name"]
         except MySQLdb.Error, e:
@@ -206,14 +203,14 @@ def GetWasherZone():
     return washer_utils.GetZoneByIP(ip_address)
 
 def main():
-    global __G_REDIS_CONN, __STATIC_TASK_LIST, __G_WASHER_ZONE
+    global __G_REDIS_CONN, __G_WASHER_ZONE
     __G_REDIS_CONN = redis.Redis(host=__CFG_REDIS_IP, port=__CFG_REDIS_PORT)
     __G_WASHER_ZONE = GetWasherZone()
     if not __G_WASHER_ZONE:
         return
     print "washer init finish @ zone[%s]" % __G_WASHER_ZONE
 
-    listen_task = __G_WASHER_ZONE + "_" + __STATIC_TASK_LIST
+    listen_task = __G_WASHER_ZONE + "_" + constant_var.__STATIC_TASK_LIST
 
     while True:
         time.sleep(0.1)

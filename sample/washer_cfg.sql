@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 本机
-Source Server Version : 50173
+Source Server         : localhost
+Source Server Version : 50172
 Source Host           : localhost:3306
 Source Database       : washer_cfg
 
 Target Server Type    : MYSQL
-Target Server Version : 50173
+Target Server Version : 50172
 File Encoding         : 65001
 
-Date: 2017-10-08 23:28:09
+Date: 2017-11-03 20:00:46
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,15 +28,10 @@ CREATE TABLE `server_list` (
   `user` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `database` varchar(255) DEFAULT NULL,
+  `active` int(2) DEFAULT NULL,
+  `zone` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of server_list
--- ----------------------------
-INSERT INTO `server_list` VALUES ('1', 'test', 't01', '127.0.0.1', '3306', 'root', '123456', 'test1');
-INSERT INTO `server_list` VALUES ('2', 'test', 't02', '127.0.0.1', '3306', 'root', '123456', 'test2');
-INSERT INTO `server_list` VALUES ('3', 'ana', 'ana_db', '127.0.0.1', '3306', 'root', '123456', 'ana_db');
 
 -- ----------------------------
 -- Table structure for task_list
@@ -56,6 +51,12 @@ CREATE TABLE `task_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of task_list
+-- Table structure for zone_cfg
 -- ----------------------------
-INSERT INTO `task_list` VALUES ('1', 'test', 'task1', 'test_1', null, '1', '* * * *', '2017-10-08 16:19:27', '1');
+DROP TABLE IF EXISTS `zone_cfg`;
+CREATE TABLE `zone_cfg` (
+  `_id` int(10) NOT NULL,
+  `zone` varchar(200) DEFAULT NULL,
+  `ip` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

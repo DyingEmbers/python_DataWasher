@@ -28,25 +28,30 @@ def CPU_STAT(func, *args, **kwargs):
 
 
 # 配置库配置
-__CFG_WAHSER_CFG_IP = "127.0.0.1"
-__CFG_WASHER_CFG_PORT = 3306
-__CFG_WASHER_CFG_USER = "root"
-__CFG_WASHER_CFG_PWD = "123456"
+__CFG_WAHSER_IP = "127.0.0.1"
+__CFG_WASHER_PORT = 3306
+__CFG_WASHER_USER = "root"
+__CFG_WASHER_PWD = "123456"
 __CFG_WASHER_CFG_DB_NAME = "washer_cfg"
+__CFG_WASHER_DATA_DB_NAME = "washer_mgr"
+
 
 def GetWasherCfgConn():
-    global __CFG_WAHSER_CFG_IP, __CFG_WASHER_CFG_PORT, __CFG_WASHER_CFG_USER, __CFG_WASHER_CFG_PWD, __CFG_WASHER_CFG_DB_NAME
+    global __CFG_WAHSER_IP, __CFG_WASHER_PORT, __CFG_WASHER_USER, __CFG_WASHER_PWD, __CFG_WASHER_CFG_DB_NAME
     conn = MySQLdb.connect(
-        host=__CFG_WAHSER_CFG_IP,
-        port=__CFG_WASHER_CFG_PORT,
-        user=__CFG_WASHER_CFG_USER,
-        passwd=__CFG_WASHER_CFG_PWD,
+        host=__CFG_WAHSER_IP,
+        port=__CFG_WASHER_PORT,
+        user=__CFG_WASHER_USER,
+        passwd=__CFG_WASHER_PWD,
         db=__CFG_WASHER_CFG_DB_NAME,
         cursorclass=MySQLdb.cursors.DictCursor,
     )
 
     return conn
 
+def GetWasherDataConn():
+    global __CFG_WASHER_DATA_DB_NAME
+    return GetServerConn(__CFG_WASHER_DATA_DB_NAME)
 
 # 获取数据源连接
 def GetServerConn(server_id):

@@ -85,7 +85,7 @@ def CheckTask(tm_rule, target_time):
 
 # 记录执行错误的任务
 def SaveFailedTask(task_id, server, wash_time, err_msg):
-    data_conn = washer_utils.GetServerConn("wash_data")
+    data_conn = washer_utils.GetWasherDataConn()
     sql = "INSERT INTO err_task(task_id, server, wash_time, err_msg)VALUE(%s,%s,%s,%s)"
     data_cursor = data_conn.cursor()
     data_cursor.execute(sql, [task_id, server, str(wash_time), err_msg])

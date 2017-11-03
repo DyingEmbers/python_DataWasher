@@ -210,7 +210,6 @@ def ExecTick():
     cursor.execute(sql)
     exec_task = cursor.fetchall()
 
-    if len(exec_task) == 0: return
     # 执行额外任务
     for line in exec_task:
         ProcessExecTask(line["task_id"], line["begin_time"], line["end_time"])

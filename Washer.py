@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import sys, redis, time, json, traceback, washer_utils, MySQLdb, datetime, socket
+import sys, redis, time, json, traceback, washer_utils, MySQLdb, datetime, socket, threading
 
 import constant_var
 sys.path.append("task")
@@ -10,6 +10,8 @@ __CFG_REDIS_PORT = "6379"
 
 __G_REDIS_CONN = None
 __G_WASHER_ZONE = None   # 清洗脚本所属区域
+__G_WASHER_ID = None     # 清洗脚本id 动态获取
+__G_EXEC_TASK = ""       # 当前正在执行的任务
 
 # 根据传入参数的类型返回类型字符串
 def GetDataType(data):
@@ -121,8 +123,9 @@ def ReportTaskResult(task, msg):
 
 @washer_utils.CPU_STAT
 def ProcessTask(json_task):
+    global __G_EXEC_TASK
     task = json.loads(json_task)
-
+    __G_EXEC_TASK = task["task_id"]
     # 读取任务配置
     task_config = washer_utils.GetTaskConfig(task["task_id"])
     if not task_config:
@@ -134,10 +137,6 @@ def ProcessTask(json_task):
         print task_config["py_name"] + " do not has Function Task"
         ReportTaskResult(task, "NoTaskFunc")
         return
-
-    # 任务执行前python
-    if hasattr(task_obj, "BeforeProcess"):
-        getattr(task_obj, "BeforeProcess")(task["server"], task["time"])
 
     # 执行任务
     func = getattr(task_obj, "Task")
@@ -200,15 +199,42 @@ def ProcessTask(json_task):
 # 获取清洗中心所属的区域
 def GetWasherZone():
     ip_address = socket.gethostbyname(socket.gethostname())
+    print "washer setup @ " + ip_address
     return washer_utils.GetZoneByIP(ip_address)
 
-def main():
-    global __G_REDIS_CONN, __G_WASHER_ZONE
+def WasherHeartbeat():
+    global __G_REDIS_CONN, __G_WASHER_ID, __G_EXEC_TASK
+    __G_REDIS_CONN.setex("washer_" + __G_WASHER_ID, "exec task:" + __G_EXEC_TASK, 10)  # 10秒过期
+
+    t = threading.Timer(5, WasherHeartbeat)  # 5秒心跳
+    t.start()
+
+def WasherInit():
+    global __G_REDIS_CONN, __G_WASHER_ZONE, __G_WASHER_ID
+    # 初始化redis连接
     __G_REDIS_CONN = redis.Redis(host=__CFG_REDIS_IP, port=__CFG_REDIS_PORT)
+    if not __G_REDIS_CONN: return False
+
+    # 获取id号
+    pipe = __G_REDIS_CONN.pipeline(transaction=True)
+    __G_REDIS_CONN.incr("washer_id")
+    __G_WASHER_ID = __G_REDIS_CONN.get("washer_id")
+    pipe.execute()
+
+    # 获取所在区域
     __G_WASHER_ZONE = GetWasherZone()
     if not __G_WASHER_ZONE:
-        return
+        return False
+
     print "washer init finish @ zone[%s]" % __G_WASHER_ZONE
+
+    # 启动心跳
+    WasherHeartbeat()
+    return True
+
+def main():
+    global __G_REDIS_CONN, __G_WASHER_ZONE, __G_EXEC_TASK
+    if not WasherInit(): return
 
     listen_task = __G_WASHER_ZONE + "_" + constant_var.__STATIC_TASK_LIST
 
@@ -218,6 +244,7 @@ def main():
         if not task: continue
         try:
             ProcessTask(task)
+            __G_EXEC_TASK = ""
         except Exception, e:
             ex_str = traceback.format_exc()
             print e.message

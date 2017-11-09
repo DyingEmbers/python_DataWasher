@@ -20,14 +20,6 @@ def Task(conn, date_time):
     arr = date_time.split(" ")
     return ret, arr[0]
 
-'''
-可选的：任务执行前调用
-@param server 数据源服务器
-@param date_time 执行时间点
-'''
-def BeforeProcess(server, date_time):
-
-    pass
 
 '''
 可选的：任务执行后调用

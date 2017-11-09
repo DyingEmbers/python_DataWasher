@@ -70,6 +70,7 @@ def GetServerConn(server_id):
     )
     if not conn:
         print "taget db[%s] not found " % server_id
+    cur = conn.cursor()
 
     return conn
 

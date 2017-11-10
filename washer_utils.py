@@ -126,3 +126,63 @@ def GetZoneByServerID(server_id):
         print "can not get washer zone by server id " + server_id
         return None
     return zone["zone"]
+
+# tasktype	int	任务类型(1来自自动任务,2来自…)
+# taskid	str	任务名
+# dsSrc	    str	来源数据源
+# dsTar	    str	目标数据源
+# params	json	执行参数
+# scriptID	str	执行脚本
+# startTm	datetime	开始执行时间
+# stopTm	datetime	结束执行时间
+# status	int	执行状态
+# len	    int	任务长度
+# pos	    int	任务位置
+# code	    int	失败code
+# msg	    str	失败msg
+def InsertTaskData(taskid, src_db, tar_db, param, script_id, len=0):
+
+    create_sql = """
+    CREATE TABLE IF NOT EXISTS`task_state_log` (
+    PRIMARY KEY (`_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    """
+    conn = GetWasherDataConn()
+    cursor = conn.cursor()
+
+    # 创建表格
+    cursor.execute(create_sql)
+    conn.commit()
+
+    # 插入任务记录
+    sql = "INSERT INTO task_state_log(task_id, ds_src, ds_tar, " \
+          "params, script_id, len, start_tm) value (%s,%s,%s,%s,%s,%d, now())"
+    sql = sql % (taskid, src_db, tar_db, param, script_id, len)
+    cursor.execute(sql)
+    conn.commit()
+    conn.close()
+
+# state 执行状态
+# 0 准备
+# 1 执行中
+# 2 执行成功
+# 3 执行失败
+def UpdateTaskState(idx, state, code = 0, msg = ""):
+    conn = GetWasherDataConn()
+    cursor = conn.cursor()
+    sql = "update task_state_log set state = %d, set code=%d, set msg = %s " % (state, code, msg)
+    if state == 2 or state == 3:
+        sql += " set end_tm = now() "
+    sql += " where _id = %d" % idx
+    cursor.execute(sql)
+    conn.commit()
+
+def UpdateTaskPos(idx, pos):
+    conn = GetWasherDataConn()
+    cursor = conn.cursor()
+    sql = "update task_state_log set pso= %d" % pos
+    sql += " where _id = %d" % idx
+    cursor.execute(sql)
+    conn.commit()
+
+

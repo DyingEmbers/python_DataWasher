@@ -127,7 +127,7 @@ def CheckTaskResult(task_list, task_id, time_node):
             SaveFailedTask(task_id, task_result["server"], time_node, task_result["result"])
 
 
-# 处理任务
+# 处理定时任务
 def ProcessTask(task_id, time_node):
     global __CFG_TASK_TIME_OUT  # 配置
     task_cfg = washer_utils.GetTaskConfig(task_id)
@@ -186,7 +186,10 @@ def TaskTick():
     SetTaskProcessTime(__G_TASK_PROCESS)
 
 # 执行额外任务
-def ProcessExecTask(task_id, begin_time, end_time):
+def ProcessExecTask(task_date):
+    # 解析任务参数
+
+
     task_cfg = washer_utils.GetTaskConfig(task_id)
     if not task_cfg:
         print "can not found task[%d]" % task_id
@@ -212,7 +215,7 @@ def ExecTick():
 
     # 执行额外任务
     for line in exec_task:
-        ProcessExecTask(line["task_id"], line["begin_time"], line["end_time"])
+        ProcessExecTask(line)
         # 清理现场
         cursor.execute("delete from tt_exec where _id = " + str(line["_id"]))
 

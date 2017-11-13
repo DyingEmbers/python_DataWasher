@@ -88,7 +88,28 @@ def GetActiveTask():
 def GetServerList(game):
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
-    cur.execute("select server_id from server_list where game = '" + game + "'")
+    try:
+        cur.execute("select server_id from server_list where game = '" + game + "'")
+    except MySQLdb.Error, e:
+        if e.args[0] == 1146:  # 表格不存在，创建默认表
+            create_sql = """
+            CREATE TABLE `server_list` (
+              `id` int(20) NOT NULL,
+              `server_id` varchar(255) DEFAULT NULL,
+              `db_type` varchar(255) DEFAULT NULL,
+              `ip` varchar(255) DEFAULT NULL,
+              `port` int(11) DEFAULT NULL,
+              `user` varchar(255) DEFAULT NULL,
+              `password` varchar(255) DEFAULT NULL,
+              `database` varchar(255) DEFAULT NULL,
+              `active` int(2) DEFAULT NULL,
+              `zone` varchar(255) DEFAULT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            """
+        else:
+            print "Error %d:%s when get server list" % (e.args[0], e.args[1])
+
     server_list = cur.fetchall()
     cur.close()
     washer_conn.close()
@@ -144,6 +165,22 @@ def InsertTaskData(taskid, src_db, tar_db, param, script_id, len=0):
 
     create_sql = """
     CREATE TABLE IF NOT EXISTS`task_state_log` (
+    `_id` int(20) NOT NULL AUTO_INCREMENT,
+    `tasktype` int(10) DEFAULT NULL,
+    `task_id` varchar(32) DEFAULT NULL,
+    `src_server_id` varchar(64) DEFAULT NULL,
+    `src_db_type` varchar(64) DEFAULT NULL,
+    `tar_server_id` varchar(64) DEFAULT NULL,
+    `tar_db_type` varchar(64) DEFAULT NULL,
+    `params` varchar(1024) DEFAULT NULL,
+    `script_id` varchar(64) DEFAULT NULL,
+    `start_tm` datetime DEFAULT NULL,
+    `end_tm` datetime DEFAULT NULL,
+    `status` int(10) DEFAULT NULL,
+    `len` int(10) DEFAULT NULL,
+    `pos` int(10) DEFAULT NULL,
+    `code` int(10) DEFAULT NULL,
+    `msg` varchar(1024) DEFAULT NULL,
     PRIMARY KEY (`_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     """
@@ -160,14 +197,21 @@ def InsertTaskData(taskid, src_db, tar_db, param, script_id, len=0):
     sql = sql % (taskid, src_db, tar_db, param, script_id, len)
     cursor.execute(sql)
     conn.commit()
+
+    # 获取插入的最后一个自增id
+    cursor.execute("select last_insert_id() as idx")
+    line = cursor.fetchone()
+    idx = 0
+    if line: idx = line["idx"]
     conn.close()
+    return idx
 
 # state 执行状态
 # 0 准备
 # 1 执行中
 # 2 执行成功
 # 3 执行失败
-def UpdateTaskState(idx, state, code = 0, msg = ""):
+def UpdateTaskState(idx, state, code=0, msg=""):
     conn = GetWasherDataConn()
     cursor = conn.cursor()
     sql = "update task_state_log set state = %d, set code=%d, set msg = %s " % (state, code, msg)
@@ -176,13 +220,18 @@ def UpdateTaskState(idx, state, code = 0, msg = ""):
     sql += " where _id = %d" % idx
     cursor.execute(sql)
     conn.commit()
+    conn.close()
 
+# 更新任务进度
+# param idx 任务id
+# param pos 任务进度
 def UpdateTaskPos(idx, pos):
     conn = GetWasherDataConn()
     cursor = conn.cursor()
-    sql = "update task_state_log set pso= %d" % pos
+    sql = "update task_state_log set pos= %d" % pos
     sql += " where _id = %d" % idx
     cursor.execute(sql)
     conn.commit()
+    conn.close()
 
 

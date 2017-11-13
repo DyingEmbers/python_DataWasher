@@ -168,7 +168,7 @@ def ProcessTask(json_task):
 
     desc_cur = desc_conn.cursor()
     # 每次执行的数据唯一， 删除这个服务器该时间点的其他数据
-    if task_config["day_one"] == 1: 
+    if task_config["day_one"] == 1:
         try:
             tmp_sql = "delete from " + task_config["save_name"] + " where `wash_time` = '" + task["time"] + "' and `server` = '" + task["server"] + "'"
             row_num = desc_cur.execute(tmp_sql)

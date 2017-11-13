@@ -63,6 +63,8 @@ def PushTask(task_list, game, server, time_node, task_id, task_idx):
     __G_REDIS_CONN.rpush(zone + "_" + constant_var.__STATIC_TASK_LIST, json.dumps(task))
     task_list.append(task)
 
+    washer_utils.InsertTaskData(task_id, )
+
 def _CheckTimeNode(time_node, target_time):
     if time_node == "*":
         return True

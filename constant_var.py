@@ -8,6 +8,9 @@ __STATIC_DEAL_LIST = "deal_list"            # 已处理的任务列表 有任务
 __STATIC_TASK_PROCESS = "task_process"      # 任务进度
 __STATIC_TIME_FORMAT = "%Y-%m-%d %H:%M"     # 任务进度储存的时间格式
 
+# 任务类型枚举
+__STATIC_REGULAR_TASK = 1                   # 定时任务
+__STATIC_ADDITIONAL_TASK = 2                # 额外任务
 
 # 任务状态枚举
 __STATIC_TASK_PREPARE = 0                   # 准备中

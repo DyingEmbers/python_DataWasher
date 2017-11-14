@@ -32,13 +32,13 @@ def GetDataType(data):
 # param db_id 目标数据库id
 # param table_name 表名
 # param data 数据
-def CreateTableByData(db_id, table_name, data):
+def CreateTableByData(db_id, db_type, table_name, data):
     # 获取目标数据库连接
-    conn = washer_utils.GetServerConn(db_id)
+    conn = washer_utils.GetServerConn(db_id, db_type)
     if not conn: return
 
     # 构造sql语句
-    sql = "CREATE TABLE IF NOT EXISTS `" + (table_name) + "`(`__t_id` INT UNSIGNED AUTO_INCREMENT,"
+    sql = "CREATE TABLE IF NOT EXISTS `" + table_name + "`(`__t_id` INT UNSIGNED AUTO_INCREMENT,"
     line = data[0]
     for key in line:
         sql += "`" + key + "`"
@@ -53,9 +53,9 @@ def CreateTableByData(db_id, table_name, data):
     conn.commit()
     conn.close()
 
-def AddTableIndex(db_id, table_name, key, val):
+def AddTableIndex(db_id, db_type, table_name, key, val):
     # 获取目标数据库连接
-    conn = washer_utils.GetServerConn(db_id)
+    conn = washer_utils.GetServerConn(db_id, db_type)
     if not conn: return
 
     # 构造sql语句
@@ -104,28 +104,38 @@ def InsertWashedData(table_name, desc_conn, data):
             print "Error %d:%s" % (e.args[0], e.args[1])
             if e.args[0] == 1146:  # 表格不存在，创建默认表
                 print "Try to create table " + table_name
-                CreateTableByData("ana_db", table_name, data)
+                CreateTableByData("ana", "ana_db", table_name, data)
             if e.args[0] == 1054:
                 tmp = e.args[1].split("'")
-                AddTableIndex("ana_db", table_name, tmp[1], line[tmp[1]])
+                AddTableIndex("ana", "ana_db", table_name, tmp[1], line[tmp[1]])
 
     print"insert " + str(len(data)) + " row data to " + table_name
 
 # 汇报任务完成情况
 def ReportTaskResult(task, msg):
-    global __G_REDIS_CONN
+    global __G_REDIS_CONN, __G_EXEC_TASK
 
     # 插入任务
     result = {"time": task["time"], "task_id": task["task_id"], "task_idx": task["task_idx"],
               "server": task["server"], "result": msg}
     __G_REDIS_CONN.rpush(constant_var.__STATIC_DEAL_LIST, json.dumps(result))
 
+    state = constant_var.__STATIC_TASK_SUCCEED  # 默认成功
+    code = 0
+    if msg != "Finish":
+        state = constant_var.__STATIC_TASK_FAILED  # 失败
+        code = 1
+    washer_utils.UpdateTaskState(__G_EXEC_TASK, state, code, msg)
+
 
 @washer_utils.CPU_STAT
 def ProcessTask(json_task):
     global __G_EXEC_TASK
     task = json.loads(json_task)
-    __G_EXEC_TASK = task["task_id"]
+    __G_EXEC_TASK = task["task_idx"]
+    # 将任务标记为执行中
+    washer_utils.UpdateTaskState(__G_EXEC_TASK, constant_var.__STATIC_TASK_IN_PROGRESS)
+
     # 读取任务配置
     task_config = washer_utils.GetTaskConfig(task["task_id"])
     if not task_config:
@@ -140,7 +150,7 @@ def ProcessTask(json_task):
 
     # 执行任务
     func = getattr(task_obj, "Task")
-    src_conn = washer_utils.GetServerConn(task["server"])
+    src_conn = washer_utils.GetServerConn(task["server"], task["db_type"])
     if not src_conn:
         ReportTaskResult(task, "TargetConnErr")
         return
@@ -161,7 +171,7 @@ def ProcessTask(json_task):
         line["wash_time"] = task["time"]
 
     # 写入数据 TODO@apm30 目标数据库现在是写死的，以后应该改成task_list的一个参数
-    desc_conn = washer_utils.GetServerConn("ana_db")
+    desc_conn = washer_utils.GetServerConn("ana", "ana_db")
     if not desc_conn:
         ReportTaskResult(task, "DescConnErr")
         return
@@ -204,7 +214,7 @@ def GetWasherZone():
 
 def WasherHeartbeat():
     global __G_REDIS_CONN, __G_WASHER_ID, __G_EXEC_TASK
-    __G_REDIS_CONN.setex("washer_" + __G_WASHER_ID, "exec task:" + __G_EXEC_TASK, 10)  # 10秒过期
+    __G_REDIS_CONN.setex("washer_" + __G_WASHER_ID, "exec task:" + str(__G_EXEC_TASK), 10)  # 10秒过期
 
     t = threading.Timer(5, WasherHeartbeat)  # 5秒心跳
     t.start()
@@ -244,7 +254,7 @@ def main():
         if not task: continue
         try:
             ProcessTask(task)
-            __G_EXEC_TASK = ""
+            __G_EXEC_TASK = 0
         except Exception, e:
             ex_str = traceback.format_exc()
             print e.message

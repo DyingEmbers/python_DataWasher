@@ -53,17 +53,22 @@ def Init():
 
     # TODO@apm30 异常数据清理工作
 
-def PushTask(task_list, game, server, time_node, task_id, task_idx):
+def PushTask(task_list, db_type, server, time_node, task_id):
     global __G_REDIS_CONN
 
     # 插入任务
-    task = {"game": game, "server": server, "time": str(time_node), "task_id": task_id, "task_idx": task_idx}
+    task = {"db_type": db_type, "server": server, "time": str(time_node), "task_id": task_id}
+    task_json = json.dumps(task)
+    task_idx = washer_utils.InsertTaskData(constant_var.__STATIC_REGULAR_TASK,
+                                           task_id, server, db_type, "ana", "ana_db", task_json)
+
+    task["task_idx"] = task_idx
+    # 将任务推送到redis队列
     zone = washer_utils.GetZoneByServerID(server)
     if not zone: return
     __G_REDIS_CONN.rpush(zone + "_" + constant_var.__STATIC_TASK_LIST, json.dumps(task))
     task_list.append(task)
 
-    washer_utils.InsertTaskData(task_id, )
 
 def _CheckTimeNode(time_node, target_time):
     if time_node == "*":
@@ -121,26 +126,26 @@ def CheckTaskResult(task_list, task_id, time_node):
             # TODO@apm30 收到任务执行结果，但内存中没有对应任务， 可能任务重复执行
             print "ERRO: process task[%d] at time_node[%s] task json[%s]" % (task_result["task_id"], str(time_node), result_json)
             SaveFailedTask(task_id, task_result["server"], time_node, "DuplicateTask")
+            continue
 
         # 检查任务完成情况
         if task_result["result"] != "Finish":
             print "ERRO: process task[%d] at time_node[%s] get err[%s] from result" % (task_result["task_id"], str(time_node), task_result["result"])
             # 记录执行失败的问题
             SaveFailedTask(task_id, task_result["server"], time_node, task_result["result"])
+            continue
 
 
 # 处理定时任务
 def ProcessTask(task_id, time_node):
     global __CFG_TASK_TIME_OUT  # 配置
     task_cfg = washer_utils.GetTaskConfig(task_id)
-    game = task_cfg["game"]
+    db_type = task_cfg["db_type"]
     task_list = []
     # 向redis写任务
-    server_list = washer_utils.GetServerList(game)
-    task_idx = 0
+    server_list = washer_utils.GetServerList(db_type)
     for server in server_list:
-        PushTask(task_list, game, server["server_id"], time_node, task_id, task_idx)
-        task_idx += 1
+        PushTask(task_list, db_type, server["server_id"], time_node, task_id)
 
     # 等待任务执行完毕
     task_begin = datetime.datetime.now()
@@ -175,6 +180,7 @@ def TaskTick():
 
     # 时间比现实时间慢， 尝试执行下一分钟的任务
     __G_TASK_PROCESS += datetime.timedelta(minutes=1)
+    print "Begin washer data @ " + str(__G_TASK_PROCESS)
 
     # 遍历所有任务，并执行当前时间点的任务
     task_list = washer_utils.GetActiveTask()
@@ -186,30 +192,31 @@ def TaskTick():
 
     # 更新任务进度
     SetTaskProcessTime(__G_TASK_PROCESS)
+    print "End washer data @ " + str(__G_TASK_PROCESS)
 
 # 执行额外任务
 def ProcessExecTask(task_date):
+    pass
+    # 二外执行的脚本由另一个脚本执行
     # 解析任务参数
-
-
-    task_cfg = washer_utils.GetTaskConfig(task_id)
-    if not task_cfg:
-        print "can not found task[%d]" % task_id
-        return
-
-    # 去除秒数
-    process_time = begin_time - datetime.timedelta(seconds=begin_time.second)
-    while process_time <= end_time:
-        # 检查当前时间点是否需要执行
-        if not CheckTask(task_cfg["exec_tm"], process_time): continue
-        ProcessTask(task_id, process_time)
-        print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
-        process_time += datetime.timedelta(minutes=1)
+    # task_cfg = washer_utils.GetTaskConfig(task_id)
+    # if not task_cfg:
+    #     print "can not found task[%d]" % task_id
+    #     return
+    #
+    # # 去除秒数
+    # process_time = begin_time - datetime.timedelta(seconds=begin_time.second)
+    # while process_time <= end_time:
+    #     # 检查当前时间点是否需要执行
+    #     if not CheckTask(task_cfg["exec_tm"], process_time): continue
+    #     ProcessTask(task_id, process_time)
+    #     print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
+    #     process_time += datetime.timedelta(minutes=1)
 
 # 额外任务Tick
 def ExecTick():
     # 检查是否有额外任务
-    conn = washer_utils.GetServerConn("wash_data")
+    conn = washer_utils.GetServerConn("wash_mgr", "wash_db")
     sql = "SELECT * from tt_exec"
     cursor = conn.cursor()
     cursor.execute(sql)
@@ -233,7 +240,7 @@ def main():
     while True:
         try:
             TaskTick()
-            ExecTick()
+            # ExecTick()
         except Exception, e:
             ex_str = traceback.format_exc()
             print e.message

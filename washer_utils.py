@@ -33,7 +33,10 @@ __CFG_WASHER_PORT = 3306
 __CFG_WASHER_USER = "root"
 __CFG_WASHER_PWD = "123456"
 __CFG_WASHER_CFG_DB_NAME = "washer_cfg"
-__CFG_WASHER_DATA_DB_NAME = "washer_mgr"
+
+
+__CFG_WASHER_SERVER_ID = "wash_mgr"       # 清洗中心服务器标志服
+__CFG_WASHER_DB_TYPE = "wash_db"            # 清洗中心数据类型
 
 
 def GetWasherCfgConn():
@@ -50,15 +53,22 @@ def GetWasherCfgConn():
     return conn
 
 def GetWasherDataConn():
-    global __CFG_WASHER_DATA_DB_NAME
-    return GetServerConn(__CFG_WASHER_DATA_DB_NAME)
+    global __CFG_WASHER_SERVER_ID, __CFG_WASHER_DB_TYPE
+    return GetServerConn(__CFG_WASHER_SERVER_ID, __CFG_WASHER_DB_TYPE)
 
 # 获取数据源连接
-def GetServerConn(server_id):
+def GetServerConn(server_id, db_type, time_node=None):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select `ip`, `port`, `user`, `password`, `database` from server_list where server_id = '" + server_id + "'" )
+    sql = "select `ip`, `port`, `user`, `password`, `database` from server_list" \
+          " where server_id = '%s' and db_type = '%s'" % (server_id, db_type)
+    # time_node 预留以支持数据库优先时间段， 避免game_log无法重建
+
+    cur.execute(sql)
     result = cur.fetchone()
+    if not result:
+        print "taget db[%s] type[%s] not found " % (server_id, db_type)
+        return
 
     conn = MySQLdb.connect(
         host=result["ip"],
@@ -70,7 +80,7 @@ def GetServerConn(server_id):
     )
     if not conn:
         print "taget db[%s] not found " % server_id
-    cur = conn.cursor()
+        return
 
     return conn
 
@@ -78,38 +88,17 @@ def GetServerConn(server_id):
 def GetActiveTask():
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
-    cur.execute("select task_id, game, py_name, exec_tm, last_tm from task_list where active = 1")
+    cur.execute("select task_id, db_type, py_name, exec_tm, last_tm from task_list where active = 1")
     task_list = cur.fetchall()
     cur.close()
     washer_conn.close()
     return task_list
 
 # 获取任务列表
-def GetServerList(game):
+def GetServerList(db_type):
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
-    try:
-        cur.execute("select server_id from server_list where game = '" + game + "'")
-    except MySQLdb.Error, e:
-        if e.args[0] == 1146:  # 表格不存在，创建默认表
-            create_sql = """
-            CREATE TABLE `server_list` (
-              `id` int(20) NOT NULL,
-              `server_id` varchar(255) DEFAULT NULL,
-              `db_type` varchar(255) DEFAULT NULL,
-              `ip` varchar(255) DEFAULT NULL,
-              `port` int(11) DEFAULT NULL,
-              `user` varchar(255) DEFAULT NULL,
-              `password` varchar(255) DEFAULT NULL,
-              `database` varchar(255) DEFAULT NULL,
-              `active` int(2) DEFAULT NULL,
-              `zone` varchar(255) DEFAULT NULL,
-              PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            """
-        else:
-            print "Error %d:%s when get server list" % (e.args[0], e.args[1])
-
+    cur.execute("select server_id from server_list where db_type = '" + db_type + "'")
     server_list = cur.fetchall()
     cur.close()
     washer_conn.close()
@@ -118,7 +107,7 @@ def GetServerList(game):
 def GetTaskConfig(task_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select game, py_name, save_name, day_one, unique_key, exec_tm from task_list where task_id = '" + str(task_id) + "'")
+    cur.execute("select db_type, py_name, save_name, day_one, unique_key, exec_tm from task_list where task_id = '" + str(task_id) + "'")
     task = cur.fetchone()
     cur.close()
     conn.close()
@@ -161,7 +150,7 @@ def GetZoneByServerID(server_id):
 # pos	    int	任务位置
 # code	    int	失败code
 # msg	    str	失败msg
-def InsertTaskData(taskid, src_db, tar_db, param, script_id, len=0):
+def InsertTaskData(task_type, taskid, src_server, src_db, tar_server, tar_db, param, len=0):
 
     create_sql = """
     CREATE TABLE IF NOT EXISTS`task_state_log` (
@@ -192,9 +181,9 @@ def InsertTaskData(taskid, src_db, tar_db, param, script_id, len=0):
     conn.commit()
 
     # 插入任务记录
-    sql = "INSERT INTO task_state_log(task_id, ds_src, ds_tar, " \
-          "params, script_id, len, start_tm) value (%s,%s,%s,%s,%s,%d, now())"
-    sql = sql % (taskid, src_db, tar_db, param, script_id, len)
+    sql = "INSERT INTO task_state_log(tasktype, task_id, src_server_id, src_db_type, " \
+          "tar_server_id, tar_db_type, params, len, start_tm) value (%d,%s,%s,%s,%s,%s,%s,%d, now())"
+    sql = sql % (task_type,taskid, repr(src_server), repr(src_db), repr(tar_server), repr(tar_db), repr(param), len)
     cursor.execute(sql)
     conn.commit()
 
@@ -214,9 +203,9 @@ def InsertTaskData(taskid, src_db, tar_db, param, script_id, len=0):
 def UpdateTaskState(idx, state, code=0, msg=""):
     conn = GetWasherDataConn()
     cursor = conn.cursor()
-    sql = "update task_state_log set state = %d, set code=%d, set msg = %s " % (state, code, msg)
+    sql = "update task_state_log set status = %d, code=%d, msg = %s " % (state, code, repr(msg))
     if state == 2 or state == 3:
-        sql += " set end_tm = now() "
+        sql += ", end_tm = now() "
     sql += " where _id = %d" % idx
     cursor.execute(sql)
     conn.commit()

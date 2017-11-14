@@ -27,6 +27,7 @@ def ReportAdditionResult(task_idx, msg):
 
 @washer_utils.CPU_STAT
 def ProcessTask(json_task):
+    global __G_REDIS_CONN
     task = json.loads(json_task)
     task_name = task["task_name"]
     # 创建任务记录
@@ -45,7 +46,7 @@ def ProcessTask(json_task):
     func = getattr(task_obj, "Task")
 
     try:
-        func(task)
+        func(__G_REDIS_CONN, json_task)
     except Exception, e:
         ReportAdditionResult(task_idx, "ExecTaskErr")
         return

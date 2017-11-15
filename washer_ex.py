@@ -30,9 +30,12 @@ def ProcessTask(json_task):
     global __G_REDIS_CONN
     task = json.loads(json_task)
     task_name = task["task_name"]
-    # 创建任务记录
-    task_idx = washer_utils.InsertTaskData(constant_var.__STATIC_ADDITIONAL_TASK,
-                                           0, "NULL", "NULL", "NULL", "NULL", json_task)
+    task_idx = task["task_idx"]
+
+    if not task_idx:
+        # 创建任务记录
+        task_idx = washer_utils.InsertTaskData(constant_var.__STATIC_ADDITIONAL_TASK,
+                                               0, "NULL", "NULL", "NULL", "NULL", json_task)
     # 标记为执行中
     washer_utils.UpdateTaskState(task_idx, constant_var.__STATIC_TASK_IN_PROGRESS)
 
@@ -79,7 +82,7 @@ def main():
     global __G_REDIS_CONN, __G_WASHER_ZONE
     if not WasherInit(): return
 
-    listen_task = "additional_list"
+    listen_task = constant_var.__STATIC_ADDITION_LIST
 
     while True:
         time.sleep(0.1)

@@ -60,7 +60,7 @@ def GetWasherDataConn():
 def GetServerConn(server_id, db_type, time_node=None):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    sql = "select `ip`, `port`, `user`, `password`, `database` from server_list" \
+    sql = "select `ip`, `port`, `user`, `password`, `database` from config_server_list" \
           " where server_id = '%s' and db_type = '%s'" % (server_id, db_type)
     # time_node 预留以支持数据库优先时间段， 避免game_log无法重建
 
@@ -88,7 +88,7 @@ def GetServerConn(server_id, db_type, time_node=None):
 def GetActiveTask():
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
-    cur.execute("select task_id, db_type, py_name, exec_tm, last_tm from task_list where active = 1")
+    cur.execute("select task_id, db_type, py_name, exec_tm, last_tm from config_task_list where active = 1")
     task_list = cur.fetchall()
     cur.close()
     washer_conn.close()
@@ -98,7 +98,7 @@ def GetActiveTask():
 def GetServerList(db_type):
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
-    cur.execute("select server_id from server_list where db_type = '" + db_type + "'")
+    cur.execute("select server_id from config_server_list where db_type = '" + db_type + "'")
     server_list = cur.fetchall()
     cur.close()
     washer_conn.close()
@@ -107,7 +107,7 @@ def GetServerList(db_type):
 def GetTaskConfig(task_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select db_type, py_name, save_name, day_one, unique_key, exec_tm from task_list where task_id = '" + str(task_id) + "'")
+    cur.execute("select db_type, py_name, save_name, day_one, unique_key, exec_tm from config_task_list where task_id = '" + str(task_id) + "'")
     task = cur.fetchone()
     cur.close()
     conn.close()
@@ -116,7 +116,7 @@ def GetTaskConfig(task_id):
 def GetZoneByIP(ip):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select zone from zone_cfg where ip = '" + str(ip) + "'")
+    cur.execute("select zone from config_zone_cfg where ip = '" + str(ip) + "'")
     zone = cur.fetchone()
     cur.close()
     conn.close()
@@ -128,7 +128,7 @@ def GetZoneByIP(ip):
 def GetZoneByServerID(server_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select zone from server_list where server_id = '" + server_id + "'")
+    cur.execute("select zone from config_server_list where server_id = '" + server_id + "'")
     zone = cur.fetchone()
     cur.close()
     conn.close()

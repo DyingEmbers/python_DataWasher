@@ -9,8 +9,8 @@ import json
 
 '''
 需实现Task函数
-@param conn 目标数据库连接
-@param date_time 执行时间点
+@param redis_conn redis连接
+@param json_task 任务参数
 '''
 
 def Task(redis_conn, task_json):

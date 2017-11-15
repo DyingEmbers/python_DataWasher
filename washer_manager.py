@@ -69,6 +69,18 @@ def PushTask(task_list, db_type, server, time_node, task_id):
     __G_REDIS_CONN.rpush(zone + "_" + constant_var.__STATIC_TASK_LIST, json.dumps(task))
     task_list.append(task)
 
+def PushExecTask(server, db_type, time_node, task_id):
+    global __G_REDIS_CONN
+
+    # 插入任务
+    task = {"db_type": db_type, "server": server, "time": str(time_node), "task_id": task_id}
+    task_json = json.dumps(task)
+    task_idx = washer_utils.InsertTaskData(constant_var.__STATIC_ADDITIONAL_TASK,
+                                           task_id, server, db_type, "ana", "ana_db", task_json)
+    task["task_idx"] = task_idx
+
+    __G_REDIS_CONN.rpush(constant_var.__STATIC_ADDITION_LIST, json.dumps(task))
+
 
 def _CheckTimeNode(time_node, target_time):
     if time_node == "*":
@@ -196,6 +208,7 @@ def TaskTick():
 
 # 执行额外任务
 def ProcessExecTask(task_date):
+    task_id
     pass
     # 二外执行的脚本由另一个脚本执行
     # 解析任务参数
@@ -216,7 +229,7 @@ def ProcessExecTask(task_date):
 # 额外任务Tick
 def ExecTick():
     # 检查是否有额外任务
-    conn = washer_utils.GetServerConn("wash_mgr", "wash_db")
+    conn = washer_utils.GetServerConn(washer_utils.__CFG_WASHER_SERVER_ID, washer_utils.__CFG_WASHER_DB_TYPE)
     sql = "SELECT * from tt_exec"
     cursor = conn.cursor()
     cursor.execute(sql)
@@ -240,7 +253,7 @@ def main():
     while True:
         try:
             TaskTick()
-            # ExecTick()
+            ExecTick()
         except Exception, e:
             ex_str = traceback.format_exc()
             print e.message

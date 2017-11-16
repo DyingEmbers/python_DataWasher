@@ -262,7 +262,9 @@ def ExecTick():
     for line in exec_task:
         ProcessExecTask(line)
         # 清理现场
-        cursor.execute("delete from tt_exec where _id = " + str(line["_id"]))
+        sql = "delete from tt_exec where _id = " + str(line["_id"])
+        cursor.execute(sql)
+        conn.commit()
 
     cursor.close()
     conn.close()

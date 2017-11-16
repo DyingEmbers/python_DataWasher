@@ -88,6 +88,14 @@ def _CheckTimeNode(time_node, target_time):
 
     return int(time_node) == target_time
 
+def _CheckServerLimit(server_id, server_limit):
+    if server_limit == "*": return True
+    server_vec = server_limit.split(",")
+    for s in server_vec:
+        if s == "server_id": return True
+
+    return False
+
 # 检查时间是否符合条件
 def CheckTask(tm_rule, target_time):
     tm_vec = tm_rule.split(" ")
@@ -149,7 +157,7 @@ def CheckTaskResult(task_list, task_id, time_node):
 
 
 # 处理定时任务
-def ProcessTask(task_id, time_node):
+def ProcessTask(task_id, time_node, server_limit="*"):
     global __CFG_TASK_TIME_OUT  # 配置
     task_cfg = washer_utils.GetTaskConfig(task_id)
     db_type = task_cfg["db_type"]
@@ -157,7 +165,10 @@ def ProcessTask(task_id, time_node):
     # 向redis写任务
     server_list = washer_utils.GetServerList(db_type)
     for server in server_list:
-        PushTask(task_list, db_type, server["server_id"], time_node, task_id)
+        server_id = server["server_id"]
+        # 检查服务器是否符合条件
+        if not _CheckServerLimit(server_id, server_limit): continue
+        PushTask(task_list, db_type, server_id, time_node, task_id)
 
     # 等待任务执行完毕
     task_begin = datetime.datetime.now()
@@ -206,25 +217,29 @@ def TaskTick():
     SetTaskProcessTime(__G_TASK_PROCESS)
     print "End washer data @ " + str(__G_TASK_PROCESS)
 
-# 执行额外任务
-def ProcessExecTask(task_date):
-    task_id
-    pass
-    # 二外执行的脚本由另一个脚本执行
+# 执行定时任务重建
+def ProcessExecTask(task_data):
+    task_id = task_data["task_id"]
+    begin_time = task_data["begin_time"]
+    end_time = task_data["end_time"]
+    server_limit = task_data["server"]
+
     # 解析任务参数
-    # task_cfg = washer_utils.GetTaskConfig(task_id)
-    # if not task_cfg:
-    #     print "can not found task[%d]" % task_id
-    #     return
-    #
-    # # 去除秒数
-    # process_time = begin_time - datetime.timedelta(seconds=begin_time.second)
-    # while process_time <= end_time:
-    #     # 检查当前时间点是否需要执行
-    #     if not CheckTask(task_cfg["exec_tm"], process_time): continue
-    #     ProcessTask(task_id, process_time)
-    #     print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
-    #     process_time += datetime.timedelta(minutes=1)
+    task_cfg = washer_utils.GetTaskConfig(task_id)
+    if not task_cfg:
+        print "can not found task[%d]" % task_id
+        return
+
+    # 去除秒数
+    process_time = begin_time - datetime.timedelta(seconds=begin_time.second)
+    while process_time <= end_time:
+        # 检查当前时间点是否需要执行
+        if not CheckTask(task_cfg["exec_tm"], process_time): continue
+        # 检查是否符合服务器条件
+
+        ProcessTask(task_id, process_time, server_limit)
+        print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
+        process_time += datetime.timedelta(minutes=1)
 
 # 额外任务Tick
 def ExecTick():

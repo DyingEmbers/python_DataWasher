@@ -160,10 +160,12 @@ def CheckTaskResult(task_list, task_id, time_node):
 def ProcessTask(task_id, time_node, server_limit="*"):
     global __CFG_TASK_TIME_OUT  # 配置
     task_cfg = washer_utils.GetTaskConfig(task_id)
+    game = task_cfg["game"]
     db_type = task_cfg["db_type"]
+
     task_list = []
     # 向redis写任务
-    server_list = washer_utils.GetServerList(db_type)
+    server_list = washer_utils.GetServerList(game, db_type)
     for server in server_list:
         server_id = server["server_id"]
         # 检查服务器是否符合条件
@@ -235,9 +237,15 @@ def ProcessExecTask(task_data):
     while process_time <= end_time:
         # 检查当前时间点是否需要执行
         if not CheckTask(task_cfg["exec_tm"], process_time): continue
-        # 检查是否符合服务器条件
+        # 获取服务器列表
+        server_list = washer_utils.GetServerListByTaskID(task_id)
+        for server in server_list:
+            server_id = server["server_id"]
+            db_type = server["db_type"]
+            # 检查是否符合服务器条件
+            if not _CheckServerLimit(server_id, server_limit): continue
+            PushExecTask(server_id, db_type, process_time, task_id)
 
-        ProcessTask(task_id, process_time, server_limit)
         print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
         process_time += datetime.timedelta(minutes=1)
 

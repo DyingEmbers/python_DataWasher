@@ -95,10 +95,30 @@ def GetActiveTask():
     return task_list
 
 # 获取任务列表
-def GetServerList(db_type):
+def GetServerList(game, db_type):
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
-    cur.execute("select server_id from config_server_list where db_type = '" + db_type + "'")
+    cur.execute("select server_id from config_server_list "
+                "where db_type = %s and game = %s" % (repr(db_type), repr(game)))
+    server_list = cur.fetchall()
+    cur.close()
+    washer_conn.close()
+    return server_list
+
+# 获取任务列表
+def GetServerListByTaskID(task_id):
+    washer_conn = GetWasherCfgConn()
+    cur = washer_conn.cursor()
+    sql = """
+    select t2.* from(
+    SELECT game, db_type FROM `config_task_list` where task_id = %d limit 1
+    )t1
+    inner join (
+        select game, server_id, db_type from `config_server_list`
+    )t2 on t1.game = t2.game and t1.db_type = t2.db_type
+    """ % task_id
+
+    cur.execute(sql)
     server_list = cur.fetchall()
     cur.close()
     washer_conn.close()
@@ -107,7 +127,8 @@ def GetServerList(db_type):
 def GetTaskConfig(task_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select db_type, py_name, save_name, day_one, unique_key, exec_tm from config_task_list where task_id = '" + str(task_id) + "'")
+    cur.execute("select game, db_type, py_name, save_name, day_one, unique_key, exec_tm from config_task_list "
+                "where task_id = '" + str(task_id) + "'")
     task = cur.fetchone()
     cur.close()
     conn.close()

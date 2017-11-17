@@ -150,16 +150,11 @@ def ProcessTask(json_task):
 
     # 执行任务
     func = getattr(task_obj, "Task")
-    src_conn = washer_utils.GetServerConn(task["server"], task["db_type"])
-    if not src_conn:
-        ReportTaskResult(task, "TargetConnErr")
-        return
     try:
-        data, data_date = func(src_conn, task["time"])
+        data, data_date = func(task["server"], task["db_type"], task["time"])
     except Exception, e:
         ReportTaskResult(task, "ExecTaskErr")
         return
-    src_conn.close()
 
     if hasattr(task_obj, "CreateTable"):
         getattr(task_obj, "CreateTable")()

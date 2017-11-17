@@ -28,7 +28,11 @@ def ReportAdditionResult(task_idx, msg):
 @washer_utils.CPU_STAT
 def ProcessTask(json_task):
     global __G_REDIS_CONN
-    task = json.loads(json_task)
+    try:
+        task = json.loads(json_task)
+    except Exception, e:
+        print "Load json failed, json is: " + json_task
+        return
     task_name = task["task_name"]
     task_idx = task["task_idx"]
 
@@ -39,10 +43,17 @@ def ProcessTask(json_task):
     # 标记为执行中
     washer_utils.UpdateTaskState(task_idx, constant_var.__STATIC_TASK_IN_PROGRESS)
 
-    task_obj = __import__(task_name)
+    try:
+        task_obj = __import__(task_name)
+    except Exception, e:
+        print task_name + " python file not found"
+        ReportAdditionResult(task_idx, "PyFileNotFound")
+        return
+
+
     if not hasattr(task_obj, "Task"):
         print task_name + " do not has Function Task"
-        ReportAdditionResult(task, "NoTaskFunc")
+        ReportAdditionResult(task_idx, "NoTaskFunc")
         return
 
     # 执行任务

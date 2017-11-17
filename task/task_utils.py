@@ -2,6 +2,7 @@
 
 import json
 from collections import OrderedDict
+import urllib
 
 '''
 数据库相关常用函数
@@ -14,7 +15,7 @@ def TaskDict2RedisKey(json_str):
     first = True
     for key in out_put.keys():
         if not first: out_str += "_"
-        out_str += out_put[key]
+        out_str += urllib.urlencode(out_put[key])
         first = False
     return out_put
 

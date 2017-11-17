@@ -19,7 +19,7 @@ def TaskDict2RedisKey(json_str):
         if not first: out_str += "_"
         out_str += urllib.urlencode(out_put[key])
         first = False
-    return out_put
+    return out_str
 
 
 def CheckTaskState(redis_conn, redis_key):

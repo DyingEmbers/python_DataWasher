@@ -154,6 +154,7 @@ def ProcessTask(json_task):
         data, data_date = func(task["server"], task["db_type"], task["time"])
     except Exception, e:
         ReportTaskResult(task, "ExecTaskErr")
+        print e
         return
 
     if hasattr(task_obj, "CreateTable"):
@@ -184,6 +185,7 @@ def ProcessTask(json_task):
             if e.args[0] != 1146:
                 print "Error %d:%s" % (e.args[0], e.args[1])
                 return
+            print e
 
 
     # 准备插入数据

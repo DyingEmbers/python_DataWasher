@@ -3,6 +3,8 @@
 import json
 from collections import OrderedDict
 import urllib
+import datetime
+import time
 
 '''
 数据库相关常用函数
@@ -31,4 +33,14 @@ def CheckTaskState(redis_conn, redis_key):
         redis_conn.lpop(redis_key)
 
     return True
+
+
+# 讲字符串时间转换成datetime
+def ParseDateTime(input_str, tm_format="%Y-%m-%d %H:%M:%S"):
+    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(input_str, tm_format)))
+
+# 将字符串格式的时间转换成下划线日期
+def DateFormat(time):
+    date_time = ParseDateTime(time)
+    return date_time.strftime("%Y_%m_%d")
 

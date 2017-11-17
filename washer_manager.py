@@ -79,7 +79,10 @@ def PushExecTask(server, db_type, time_node, task_id):
                                            task_id, server, db_type, "ana", "ana_db", task_json)
     task["task_idx"] = task_idx
 
-    __G_REDIS_CONN.rpush(constant_var.__STATIC_ADDITION_LIST, json.dumps(task))
+    # 将任务推送到redis队列
+    zone = washer_utils.GetZoneByServerID(server)
+    if not zone: return
+    __G_REDIS_CONN.rpush(zone + "_" + constant_var.__STATIC_TASK_LIST, json.dumps(task))
 
 
 def _CheckTimeNode(time_node, target_time):
@@ -99,14 +102,16 @@ def _CheckServerLimit(server_id, server_limit):
 # 检查时间是否符合条件
 def CheckTask(tm_rule, target_time):
     tm_vec = tm_rule.split(" ")
-    if len(tm_vec) != 4:
+    if len(tm_vec) != 6:
         print "ERRO: tm_rule " + tm_rule + " erro\n"
         return False # 数组长度错误
 
-    if not _CheckTimeNode(tm_vec[0], target_time.hour): return False
-    if not _CheckTimeNode(tm_vec[1], target_time.minute): return False
-    if not _CheckTimeNode(tm_vec[2], target_time.month): return False
-    if not _CheckTimeNode(tm_vec[3], target_time.year): return False
+    if not _CheckTimeNode(tm_vec[0], target_time.minute): return False
+    if not _CheckTimeNode(tm_vec[1], target_time.hour): return False
+    if not _CheckTimeNode(tm_vec[2], target_time.day): return False
+    if not _CheckTimeNode(tm_vec[3], target_time.month): return False
+    if not _CheckTimeNode(tm_vec[4], target_time.year): return False
+    if not _CheckTimeNode(tm_vec[5], target_time.weekday()): return False
 
     return True
 
@@ -235,6 +240,7 @@ def ProcessExecTask(task_data):
     # 去除秒数
     process_time = begin_time - datetime.timedelta(seconds=begin_time.second)
     while process_time <= end_time:
+        process_time += datetime.timedelta(minutes=1)
         # 检查当前时间点是否需要执行
         if not CheckTask(task_cfg["exec_tm"], process_time): continue
         # 获取服务器列表
@@ -247,7 +253,7 @@ def ProcessExecTask(task_data):
             PushExecTask(server_id, db_type, process_time, task_id)
 
         print "Process exec task[%d] at time_node[%s]" % (task_id, str(process_time))
-        process_time += datetime.timedelta(minutes=1)
+
 
 # 额外任务Tick
 def ExecTick():

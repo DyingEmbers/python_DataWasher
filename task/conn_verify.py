@@ -3,7 +3,7 @@
 import washer_utils, MySQLdb
 '''
 任务描述：
-测试任务
+检查配置库的连接是否正确配置
 '''
 
 def TestDBConn(ip, port, user, pwd, db_name):
@@ -34,7 +34,7 @@ def TestDBConn(ip, port, user, pwd, db_name):
 def Task(server_id, db_type, date_time):
     conn = washer_utils.GetServerConn(server_id, db_type)
     cur = conn.cursor()
-    cur.execute("select * from config_server_list")
+    cur.execute("select * from py_wash_config.config_server_list")
     conn_list = cur.fetchall()
     ret = []
     for line in conn_list:

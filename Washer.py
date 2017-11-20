@@ -73,43 +73,59 @@ def AddTableIndex(db_id, db_type, table_name, key, val):
 # param table_name 表格名称
 # param desc_conn 目标数据库连接
 # param data 需要插入的数据
-def InsertWashedData(table_name, desc_conn, data):
-    if len(data) == 0: return
+def InsertWashedData(table_name, desc_conn, data, clear_sql):
     desc_cur = desc_conn.cursor()
-    sql = "INSERT INTO "
-    sql += table_name
+    try:
+        row_num = desc_cur.execute(clear_sql)
 
-    data_key = "("
-    data_val = "("
-
-    is_first = True
-    line = data[0]
-    for key in line:
-        if not is_first:
-            data_key += ", "
-            data_val += ", "
-        data_key += "`" + key + "`"
-        data_val += "%(" + key + ")s"
-        is_first = False
-    data_key += ")"
-    data_val += ")"
-    sql += data_key + " VALUES" + data_val
-
-    while True:
-        try:
-            desc_cur.executemany(sql, data)
-            desc_conn.commit()
-            break
-        except MySQLdb.Error, e:
+        print "delete " + str(row_num) + " row data from table " + table_name
+    except MySQLdb.Error, e:
+        # 表格不存在 无需删除
+        if e.args[0] != 1146:
             print "Error %d:%s" % (e.args[0], e.args[1])
-            if e.args[0] == 1146:  # 表格不存在，创建默认表
-                print "Try to create table " + table_name
-                CreateTableByData("ana", "ana_db", table_name, data)
-            if e.args[0] == 1054:
-                tmp = e.args[1].split("'")
-                AddTableIndex("ana", "ana_db", table_name, tmp[1], line[tmp[1]])
+            return
+        print e
 
-    print"insert " + str(len(data)) + " row data to " + table_name
+    if len(data) != 0:
+        sql = "INSERT INTO "
+        sql += table_name
+
+        data_key = "("
+        data_val = "("
+
+        is_first = True
+        line = data[0]
+        for key in line:
+            if not is_first:
+                data_key += ", "
+                data_val += ", "
+            data_key += "`" + key + "`"
+            data_val += "%(" + key + ")s"
+            is_first = False
+        data_key += ")"
+        data_val += ")"
+        sql += data_key + " VALUES" + data_val
+
+        while True:
+            try:
+                desc_cur.executemany(sql, data)
+                desc_conn.commit()
+                break
+            except MySQLdb.Error, e:
+                print "Error %d:%s" % (e.args[0], e.args[1])
+                if e.args[0] == 1146:  # 表格不存在，创建默认表
+                    print "Try to create table " + table_name
+                    CreateTableByData("ana", "ana_db", table_name, data)
+                if e.args[0] == 1054:
+                    tmp = e.args[1].split("'")
+                    AddTableIndex("ana", "ana_db", table_name, tmp[1], line[tmp[1]])
+                break  # 无法处理
+
+        print"insert " + str(len(data)) + " row data to " + table_name
+
+    desc_conn.commit()
+    desc_cur.close()
+    desc_conn.close()
 
 # 汇报任务完成情况
 def ReportTaskResult(task, msg):
@@ -174,27 +190,19 @@ def ProcessTask(json_task):
 
     desc_cur = desc_conn.cursor()
     # 每次执行的数据唯一， 删除这个服务器该时间点的其他数据
-    if task_config["day_one"] == 1:
-        try:
-            tmp_sql = "delete from " + task_config["save_name"] + " where `wash_time` = '" + task["time"] + "' and `server` = '" + task["server"] + "'"
-            row_num = desc_cur.execute(tmp_sql)
-            desc_conn.commit()
-            print "delete " + str(row_num) + " row data from table " + task_config["save_name"]
-        except MySQLdb.Error, e:
-            # 表格不存在 无需删除
-            if e.args[0] != 1146:
-                print "Error %d:%s" % (e.args[0], e.args[1])
-                return
-            print e
+    tmp_sql = "delete from " + task_config["save_name"] + " where %s and `server` = '" + task["server"] + "'"
 
+    if task_config["day_one"] == 1:
+        tmp_sql = tmp_sql % ("`wash_date` = date('" + task["time"] + "')")
+    else:
+        tmp_sql = tmp_sql % ("`wash_time` = '" + task["time"] + "'")
+
+    row_num = desc_cur.execute(tmp_sql)
+    desc_conn.commit()
+    print "delete " + str(row_num) + " row data from table " + task_config["save_name"]
 
     # 准备插入数据
-    try:
-        # 拼接sql语句
-        InsertWashedData(task_config["save_name"], desc_conn, data)
-    except Exception, e:
-        print e
-        # TODO 异常处理：字段不匹配
+    InsertWashedData(task_config["save_name"], desc_conn, data, tmp_sql)
 
     if hasattr(task_obj, "AfterProcess"):
         getattr(task_obj, "AfterProcess")(task["server"], task["time"])

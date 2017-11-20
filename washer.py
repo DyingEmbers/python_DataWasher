@@ -197,10 +197,6 @@ def ProcessTask(json_task):
     else:
         tmp_sql = tmp_sql % ("`wash_time` = '" + task["time"] + "'")
 
-    row_num = desc_cur.execute(tmp_sql)
-    desc_conn.commit()
-    print "delete " + str(row_num) + " row data from table " + task_config["save_name"]
-
     # 准备插入数据
     InsertWashedData(task_config["save_name"], desc_conn, data, tmp_sql)
 

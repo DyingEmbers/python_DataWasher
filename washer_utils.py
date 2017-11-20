@@ -49,9 +49,14 @@ def GetWasherCfgConn():
         passwd=__CFG_WASHER_PWD,
         db=__CFG_WASHER_CFG_DB_NAME,
         cursorclass=MySQLdb.cursors.DictCursor,
+        # use_unicode=True,
         charset="utf8",
     )
 
+    cur = conn.cursor()
+    cur.execute("SET NAMES utf8")
+    cur.execute('SET character_set_connection=utf8;')
+    conn.commit()
     return conn
 
 def GetWasherDataConn():
@@ -79,12 +84,17 @@ def GetServerConn(server_id, db_type, time_node=None):
         passwd=result["password"],
         db=result["database"],
         cursorclass=MySQLdb.cursors.DictCursor,
+        # use_unicode=True,
         charset="utf8",
     )
     if not conn:
         print "taget db[%s] not found " % server_id
         return
 
+    cur = conn.cursor()
+    cur.execute("SET NAMES utf8")
+    cur.execute('SET character_set_connection=utf8;')
+    conn.commit()
     return conn
 
 # 获取任务列表
@@ -248,3 +258,19 @@ def UpdateTaskPos(idx, pos):
     conn.close()
 
 
+def Test():
+    sql = u"""
+            select
+        'ssal023', _id as '角色id', name as '角色名', acct as '账号名', battle as '战斗
+力', school as '职业', format(point_total/10,0) as '充值金额'
+        from t_role
+        order by battle desc
+        limit 22
+    """
+    print sql
+    conn = GetServerConn("ana", "ana_db")
+    cur = conn.cursor()
+    cur.execute(sql)
+
+if __name__ == "__main__":
+    Test()

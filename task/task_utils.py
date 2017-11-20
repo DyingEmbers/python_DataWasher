@@ -17,7 +17,16 @@ def TaskDict2RedisKey(json_str):
     first = True
     for key in out_put.keys():
         if not first: out_str += "_"
-        out_str += urllib.urlencode(out_put[key])
+        val = out_put[key]
+        if isinstance(val, basestring):
+            out_str += urllib.quote_plus(val)
+        elif isinstance(val, int):
+            out_str += str(val)
+        elif isinstance(val, list):
+            for i in val:
+                out_str += urllib.quote(i)
+        else:
+            print "ERRO: unsupport type" + str(type(val))
         first = False
     return out_str
 
@@ -36,11 +45,24 @@ def CheckTaskState(redis_conn, redis_key):
 
 
 # 讲字符串时间转换成datetime
-def ParseDateTime(input_str, tm_format="%Y-%m-%d %H:%M:%S"):
+def ParseDateTime(input_str, tm_format):
     return datetime.datetime.fromtimestamp(time.mktime(time.strptime(input_str, tm_format)))
 
 # 将字符串格式的时间转换成下划线日期
-def DateFormat(time):
-    date_time = ParseDateTime(time)
+def DateFormat(str_time, tm_format="%Y-%m-%d %H:%M:%S"):
+    date_time = ParseDateTime(str_time, tm_format)
     return date_time.strftime("%Y_%m_%d")
 
+
+def Test():
+    task_json = '{"task_name":"123","server":["ssal022","ssal025","ssal027"],' \
+                '"sdf":"","rew":"11/16/2017","vsd":"11/20/2017 15:31:42"}'
+    key = TaskDict2RedisKey(task_json)
+    print key
+
+    test_tm = "11/16/2017"
+    date_format = DateFormat(test_tm, "%m/%d/%Y")
+    print date_format
+
+if __name__ == "__main__":
+    Test()

@@ -63,6 +63,7 @@ def ProcessTask(json_task):
         func(__G_REDIS_CONN, json_task)
     except Exception, e:
         ReportAdditionResult(task_idx, "ExecTaskErr")
+        print e
         return
 
     # 发送成功消息，清理环境

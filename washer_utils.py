@@ -16,6 +16,7 @@ null_ok)
 import MySQLdb.cursors
 import MySQLdb,time
 
+
 def CPU_STAT(func, *args, **kwargs):
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -48,6 +49,7 @@ def GetWasherCfgConn():
         passwd=__CFG_WASHER_PWD,
         db=__CFG_WASHER_CFG_DB_NAME,
         cursorclass=MySQLdb.cursors.DictCursor,
+        charset="utf8",
     )
 
     return conn
@@ -77,6 +79,7 @@ def GetServerConn(server_id, db_type, time_node=None):
         passwd=result["password"],
         db=result["database"],
         cursorclass=MySQLdb.cursors.DictCursor,
+        charset="utf8",
     )
     if not conn:
         print "taget db[%s] not found " % server_id

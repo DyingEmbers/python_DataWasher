@@ -124,8 +124,6 @@ def InsertWashedData(table_name, desc_conn, data, clear_sql):
         print"insert " + str(len(data)) + " row data to " + table_name
 
     desc_conn.commit()
-    desc_cur.close()
-    desc_conn.close()
 
 # 汇报任务完成情况
 def ReportTaskResult(task, msg):
@@ -205,6 +203,7 @@ def ProcessTask(json_task):
 
     # 发送成功消息，清理环境
     ReportTaskResult(task, "Finish")
+    desc_cur.close()
     desc_conn.close()
 
 # 获取清洗中心所属的区域

@@ -17,6 +17,7 @@ import MySQLdb.cursors
 import time
 import os
 import sys
+import wash_config
 
 def CPU_STAT(func, *args, **kwargs):
     def wrapper(*args, **kwargs):
@@ -28,27 +29,13 @@ def CPU_STAT(func, *args, **kwargs):
         return ret
     return wrapper
 
-
-# 配置库配置
-__CFG_WAHSER_IP = "127.0.0.1"
-__CFG_WASHER_PORT = 3306
-__CFG_WASHER_USER = "root"
-__CFG_WASHER_PWD = "123456"
-__CFG_WASHER_CFG_DB_NAME = "washer_cfg"
-
-
-__CFG_WASHER_SERVER_ID = "wash_mgr"       # 清洗中心服务器标志服
-__CFG_WASHER_DB_TYPE = "wash_db"            # 清洗中心数据类型
-
-
 def GetWasherCfgConn():
-    global __CFG_WAHSER_IP, __CFG_WASHER_PORT, __CFG_WASHER_USER, __CFG_WASHER_PWD, __CFG_WASHER_CFG_DB_NAME
     conn = MySQLdb.connect(
-        host=__CFG_WAHSER_IP,
-        port=__CFG_WASHER_PORT,
-        user=__CFG_WASHER_USER,
-        passwd=__CFG_WASHER_PWD,
-        db=__CFG_WASHER_CFG_DB_NAME,
+        host=wash_config.__CFG_WAHSER_IP,
+        port=wash_config.__CFG_WASHER_PORT,
+        user=wash_config.__CFG_WASHER_USER,
+        passwd=wash_config.__CFG_WASHER_PWD,
+        db=wash_config.__CFG_WASHER_CFG_DB_NAME,
         cursorclass=MySQLdb.cursors.DictCursor,
         # use_unicode=True,
         charset="utf8",
@@ -61,8 +48,7 @@ def GetWasherCfgConn():
     return conn
 
 def GetWasherDataConn():
-    global __CFG_WASHER_SERVER_ID, __CFG_WASHER_DB_TYPE
-    return GetServerConn(__CFG_WASHER_SERVER_ID, __CFG_WASHER_DB_TYPE)
+    return GetServerConn(wash_config.__CFG_WASHER_SERVER_ID, wash_config.__CFG_WASHER_DB_TYPE)
 
 # 获取数据源连接
 def GetServerConn(server_id, db_type, time_node=None):

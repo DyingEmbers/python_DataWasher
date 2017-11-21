@@ -3,10 +3,9 @@
 import sys, redis, time, json, traceback, washer_utils, socket
 
 import constant_var
-sys.path.append("task")
+import wash_config
 
-__CFG_REDIS_IP = "127.0.0.1"
-__CFG_REDIS_PORT = "6379"
+sys.path.append("task")
 
 __G_REDIS_CONN = None
 __G_WASHER_ZONE = None   # 清洗脚本所属区域
@@ -82,7 +81,7 @@ def GetWasherZone():
 def WasherInit():
     global __G_REDIS_CONN, __G_WASHER_ZONE, __G_WASHER_ID
     # 初始化redis连接
-    __G_REDIS_CONN = redis.Redis(host=__CFG_REDIS_IP, port=__CFG_REDIS_PORT)
+    __G_REDIS_CONN = redis.Redis(host=wash_config.__CFG_REDIS_IP, port=wash_config.__CFG_REDIS_PORT)
     if not __G_REDIS_CONN: return False
 
     # 获取所在区域

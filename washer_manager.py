@@ -2,13 +2,12 @@
 
 # 模块导入
 import redis, time, datetime, json, washer_utils, signal, traceback
+import wash_config
 
 # 自定义模块
 import constant_var
 
 # 配置
-__CFG_REDIS_IP = "127.0.0.1"                # redis连接地址
-__CFG_REDIS_PORT = "6379"                   # redis端口
 __CFG_TASK_TIME_OUT = 300                   # 任务超时时间
 
 # 全局变量
@@ -48,7 +47,7 @@ def SetTaskProcessTime(tm):
 # 系统初始化
 def Init():
     global __G_REDIS_CONN, __G_TASK_PROCESS
-    __G_REDIS_CONN = redis.Redis(host=__CFG_REDIS_IP, port=__CFG_REDIS_PORT)
+    __G_REDIS_CONN = redis.Redis(host=wash_config.__CFG_REDIS_IP, port=wash_config.__CFG_REDIS_PORT)
     __G_TASK_PROCESS = GetTaskProcessTime()
 
     # TODO@apm30 异常数据清理工作
@@ -258,7 +257,7 @@ def ProcessExecTask(task_data):
 # 额外任务Tick
 def ExecTick():
     # 检查是否有额外任务
-    conn = washer_utils.GetServerConn(washer_utils.__CFG_WASHER_SERVER_ID, washer_utils.__CFG_WASHER_DB_TYPE)
+    conn = washer_utils.GetServerConn(wash_config.__CFG_WASHER_SERVER_ID, wash_config.__CFG_WASHER_DB_TYPE)
     sql = "SELECT * from tt_exec"
     cursor = conn.cursor()
     cursor.execute(sql)

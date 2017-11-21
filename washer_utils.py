@@ -32,11 +32,11 @@ def CPU_STAT(func, *args, **kwargs):
 
 def GetWasherCfgConn():
     conn = MySQLdb.connect(
-        host=wash_config.__CFG_WAHSER_IP,
-        port=wash_config.__CFG_WASHER_PORT,
-        user=wash_config.__CFG_WASHER_USER,
-        passwd=wash_config.__CFG_WASHER_PWD,
-        db=wash_config.__CFG_WASHER_CFG_DB_NAME,
+        host=wash_config.__WAHSER_DB_IP,
+        port=wash_config.__WASHER_DB_PORT,
+        user=wash_config.__WASHER_DB_USER,
+        passwd=wash_config.__WASHER_DB_PWD,
+        db=wash_config.__WASHER_DB_NAME,
         cursorclass=MySQLdb.cursors.DictCursor,
         # use_unicode=True,
         charset="utf8",
@@ -49,7 +49,7 @@ def GetWasherCfgConn():
     return conn
 
 def GetWasherDataConn():
-    return GetServerConn(wash_config.__CFG_WASHER_SERVER_ID, wash_config.__CFG_WASHER_DB_TYPE)
+    return GetServerConn(wash_config.__WASHER_SERVER_ID, wash_config.__WASHER_DB_TYPE)
 
 # 获取数据源连接
 def GetServerConn(server_id, db_type, time_node=None):

@@ -81,7 +81,7 @@ def GetWasherZone():
 def WasherInit():
     global __G_REDIS_CONN, __G_WASHER_ZONE, __G_WASHER_ID
     # 初始化redis连接
-    __G_REDIS_CONN = redis.Redis(host=wash_config.__CFG_REDIS_IP, port=wash_config.__CFG_REDIS_PORT)
+    __G_REDIS_CONN = redis.Redis(host=wash_config.__REDIS_IP, port=wash_config.__REDIS_PORT)
     if not __G_REDIS_CONN: return False
 
     # 获取所在区域

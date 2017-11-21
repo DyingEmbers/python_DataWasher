@@ -34,22 +34,23 @@ def ProcessTask(json_task):
         print "Load json failed, json is: " + json_task
         return
     task_name = task["task_name"]
-    task_idx = task["task_idx"]
 
-    if not task_idx:
+    if not task.has_key("task_idx"):
         # 创建任务记录
         task_idx = washer_utils.InsertTaskData(constant_var.__STATIC_ADDITIONAL_TASK,
                                                0, "NULL", "NULL", "NULL", "NULL", json_task)
+    else:
+        task_idx = task["task_idx"]
+
     # 标记为执行中
     washer_utils.UpdateTaskState(task_idx, constant_var.__STATIC_TASK_IN_PROGRESS)
 
     try:
-        task_obj = __import__(task_name)
+        task_obj = washer_utils.LoadPyFile(task_name)
     except Exception, e:
         print task_name + " python file not found"
         ReportAdditionResult(task_idx, "PyFileNotFound")
         return
-
 
     if not hasattr(task_obj, "Task"):
         print task_name + " do not has Function Task"

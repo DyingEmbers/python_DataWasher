@@ -100,7 +100,7 @@ def GetServerList(game, db_type):
     washer_conn = GetWasherCfgConn()
     cur = washer_conn.cursor()
     cur.execute("select server_id from config_server_list "
-                "where db_type = %s and game = %s" % (repr(db_type), repr(game)))
+                "where db_type = %s and game = %s", [db_type, game])
     server_list = cur.fetchall()
     cur.close()
     washer_conn.close()
@@ -129,7 +129,7 @@ def GetTaskConfig(task_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
     cur.execute("select game, db_type, py_name, save_name, day_one, unique_key, exec_tm from config_task_list "
-                "where task_id = '" + str(task_id) + "'")
+                "where task_id = %s", [task_id])
     task = cur.fetchone()
     cur.close()
     conn.close()
@@ -138,7 +138,7 @@ def GetTaskConfig(task_id):
 def GetZoneByIP(ip):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select zone from config_zone_cfg where ip = '" + str(ip) + "'")
+    cur.execute("select zone from config_zone_cfg where ip = %s", [ip])
     zone = cur.fetchone()
     cur.close()
     conn.close()
@@ -150,7 +150,7 @@ def GetZoneByIP(ip):
 def GetZoneByServerID(server_id):
     conn = GetWasherCfgConn()
     cur = conn.cursor()
-    cur.execute("select zone from config_server_list where server_id = '" + server_id + "'")
+    cur.execute("select zone from config_server_list where server_id = %s", [server_id])
     zone = cur.fetchone()
     cur.close()
     conn.close()
@@ -204,9 +204,8 @@ def InsertTaskData(task_type, taskid, src_server, src_db, tar_server, tar_db, pa
 
     # 插入任务记录
     sql = "INSERT INTO task_state_log(tasktype, task_id, src_server_id, src_db_type, " \
-          "tar_server_id, tar_db_type, params, len, start_tm) value (%d,%s,%s,%s,%s,%s,%s,%d, now())"
-    sql = sql % (task_type,taskid, repr(src_server), repr(src_db), repr(tar_server), repr(tar_db), repr(param), len)
-    cursor.execute(sql)
+          "tar_server_id, tar_db_type, params, len, start_tm) value (%s,%s,%s,%s,%s,%s,%s,%s, now())"
+    cursor.execute(sql, [task_type, taskid, src_server, src_db, tar_server, tar_db, param, len])
     conn.commit()
 
     # 获取插入的最后一个自增id
@@ -225,11 +224,11 @@ def InsertTaskData(task_type, taskid, src_server, src_db, tar_server, tar_db, pa
 def UpdateTaskState(idx, state, code=0, msg=""):
     conn = GetWasherDataConn()
     cursor = conn.cursor()
-    sql = "update task_state_log set status = %d, code=%d, msg = %s " % (state, code, repr(msg))
+    sql = "update task_state_log set status = %s, code=%s, msg = %s "
     if state == 2 or state == 3:
         sql += ", end_tm = now() "
-    sql += " where _id = %d" % idx
-    cursor.execute(sql)
+    sql += " where _id = %s"
+    cursor.execute(sql, [state, code, msg, idx])
     conn.commit()
     conn.close()
 
@@ -261,22 +260,12 @@ def LoadPyFile(modulename):
 
 
 def Test():
-    while True:
-        LoadPyFile("test_ch")
-        time.sleep(0.1)
-
-#     sql = u"""
-#             select
-#         'ssal023', _id as '角色id', name as '角色名', acct as '账号名', battle as '战斗
-# 力', school as '职业', format(point_total/10,0) as '充值金额'
-#         from t_role
-#         order by battle desc
-#         limit 22
-#     """
-#     print sql
-#     conn = GetServerConn("ana", "ana_db")
-#     cur = conn.cursor()
-#     cur.execute(sql)
+    sql = u"""
+    """
+    print sql
+    conn = GetServerConn("ana", "ana_db")
+    cur = conn.cursor()
+    cur.execute(sql)
 
 if __name__ == "__main__":
     Test()

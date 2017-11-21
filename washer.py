@@ -167,7 +167,7 @@ def ProcessTask(json_task):
     try:
         data, data_date = func(task["server"], task["db_type"], task["time"])
     except Exception, e:
-        ReportTaskResult(task, "ExecTaskErr")
+        ReportTaskResult(task, str(e))
         print e
         return
 

@@ -15,9 +15,10 @@ null_ok)
 
 import MySQLdb.cursors
 import time
-import os
 import sys
+import os
 import wash_config
+sys.path.append("task")
 
 def CPU_STAT(func, *args, **kwargs):
     def wrapper(*args, **kwargs):

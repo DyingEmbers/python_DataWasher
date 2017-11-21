@@ -14,8 +14,9 @@ null_ok)
 '''
 
 import MySQLdb.cursors
-import MySQLdb,time
-
+import time
+import os
+import sys
 
 def CPU_STAT(func, *args, **kwargs):
     def wrapper(*args, **kwargs):
@@ -257,20 +258,41 @@ def UpdateTaskPos(idx, pos):
     conn.commit()
     conn.close()
 
+# 动态载入python文件
+def LoadPyFile(modulename):
+    dirname = os.path.dirname(os.path.abspath(modulename))
+    filename, ext = os.path.splitext(os.path.basename(modulename))
+    if sys.modules.has_key(filename):
+        del sys.modules[filename]
+    if dirname:
+        sys.path.insert(0, dirname)
+    mod = __import__(filename)
+    if dirname:
+        del sys.path[0]
+    return mod
+
+
 
 def Test():
-    sql = u"""
-            select
-        'ssal023', _id as '角色id', name as '角色名', acct as '账号名', battle as '战斗
-力', school as '职业', format(point_total/10,0) as '充值金额'
-        from t_role
-        order by battle desc
-        limit 22
-    """
-    print sql
-    conn = GetServerConn("ana", "ana_db")
-    cur = conn.cursor()
-    cur.execute(sql)
+    while True:
+        LoadPyFile("test_ch")
+        time.sleep(0.1)
+
+#     sql = u"""
+#             select
+#         'ssal023', _id as '角色id', name as '角色名', acct as '账号名', battle as '战斗
+# 力', school as '职业', format(point_total/10,0) as '充值金额'
+#         from t_role
+#         order by battle desc
+#         limit 22
+#     """
+#     print sql
+#     conn = GetServerConn("ana", "ana_db")
+#     cur = conn.cursor()
+#     cur.execute(sql)
 
 if __name__ == "__main__":
     Test()
+
+
+

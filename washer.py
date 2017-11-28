@@ -32,7 +32,8 @@ def GetDataType(data):
 # param db_id 目标数据库id
 # param table_name 表名
 # param data 数据
-def CreateTableByData(db_id, db_type, table_name, data):
+# param unique_key 唯一索引
+def CreateTableByData(db_id, db_type, table_name, data, unique_key):
     # 获取目标数据库连接
     conn = washer_utils.GetServerConn(db_id, db_type)
     if not conn: return
@@ -45,8 +46,9 @@ def CreateTableByData(db_id, db_type, table_name, data):
         # 解析类型
         sql += GetDataType(line[key]) + ", "
 
-    sql += "PRIMARY KEY (`__t_id`), KEY date_idx(wash_date))"
-
+    sql += "PRIMARY KEY (`__t_id`), KEY date_idx(wash_date)"
+    if unique_key: sql += ", UNIQUE KEY `u_%s` (`%s`) USING BTREE" % (unique_key, unique_key)
+    sql += ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     # 创建表格
     cursor = conn.cursor()
     cursor.execute(sql)
@@ -57,7 +59,7 @@ def AddTableIndex(db_id, db_type, table_name, key, val):
     # 获取目标数据库连接
     conn = washer_utils.GetServerConn(db_id, db_type)
     if not conn: return
-
+    print "Try to add table[%s] index[%s]" % (table_name, key)
     # 构造sql语句
     # ALTER TABLE table_name ADD field_name field_type;
     sql = "ALTER TABLE `" + table_name + "` ADD `" + key + "`"
@@ -73,7 +75,7 @@ def AddTableIndex(db_id, db_type, table_name, key, val):
 # param table_name 表格名称
 # param desc_conn 目标数据库连接
 # param data 需要插入的数据
-def InsertWashedData(table_name, desc_conn, data, clear_sql):
+def InsertWashedData(table_name, desc_conn, data, clear_sql, unique_key):
     desc_cur = desc_conn.cursor()
     try:
         row_num = desc_cur.execute(clear_sql)
@@ -87,8 +89,9 @@ def InsertWashedData(table_name, desc_conn, data, clear_sql):
         print e
 
     if len(data) != 0:
-        sql = "INSERT INTO "
-        sql += table_name
+        sql = "INSERT "
+        if unique_key: sql += "IGNORE "
+        sql += "INTO " + table_name
 
         data_key = "("
         data_val = "("
@@ -113,9 +116,11 @@ def InsertWashedData(table_name, desc_conn, data, clear_sql):
                 break
             except MySQLdb.Error, e:
                 print "Error %d:%s" % (e.args[0], e.args[1])
+                # 发生异常，先回滚
+                desc_conn.rollback()
                 if e.args[0] == 1146:  # 表格不存在，创建默认表
                     print "Try to create table " + table_name
-                    CreateTableByData("ana", "ana_db", table_name, data)
+                    CreateTableByData("ana", "ana_db", table_name, data, unique_key)
                 if e.args[0] == 1054:
                     tmp = e.args[1].split("'")
                     AddTableIndex("ana", "ana_db", table_name, tmp[1], line[tmp[1]])
@@ -156,7 +161,7 @@ def ProcessTask(json_task):
         ReportTaskResult(task, "TaskNoFound")
         return
 
-    task_obj = __import__(task_config["py_name"])
+    task_obj = washer_utils.LoadPyFile(task_config["py_name"])
     if not hasattr(task_obj, "Task"):
         print task_config["py_name"] + " do not has Function Task"
         ReportTaskResult(task, "NoTaskFunc")
@@ -169,6 +174,8 @@ def ProcessTask(json_task):
     except Exception, e:
         ReportTaskResult(task, str(e))
         print e
+        ex_str = traceback.format_exc()
+        print ex_str
         return
 
     if hasattr(task_obj, "CreateTable"):
@@ -195,8 +202,9 @@ def ProcessTask(json_task):
     else:
         tmp_sql = tmp_sql % ("`wash_time` = '" + task["time"] + "'")
 
+
     # 准备插入数据
-    InsertWashedData(task_config["save_name"], desc_conn, data, tmp_sql)
+    InsertWashedData(task_config["save_name"], desc_conn, data, tmp_sql, task_config["unique_key"])
 
     if hasattr(task_obj, "AfterProcess"):
         getattr(task_obj, "AfterProcess")(task["server"], task["time"])
